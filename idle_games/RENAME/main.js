@@ -1,6 +1,6 @@
 //Variables
-var cookies = 0;
-var cursors = 0;
+var items = 0;
+var buildings = 0;
 load();
 
 //Functions
@@ -16,9 +16,9 @@ function write(id, value) {
 }
 
 function display() {
-	write("cursors", cursors);
-	write("cookies", cookies);
-	write("cursorCost", Math.floor(10*Math.pow(1.1,cursors)));
+	write("buildings", buildings);
+	write("items", items);
+	write("buildingCost", Math.floor(10*Math.pow(1.1,buildings)));
 }
 
 function prettify(input) {
@@ -26,24 +26,24 @@ function prettify(input) {
 	return output;
 }
 
-function cookieClick(number) {
-	cookies += number;
-	write('cookies',cookies);
+function itemClick(number) {
+	items += number;
+	display();
 }
 
-function buyCursor() {
-	var cursorCost = Math.floor(10*Math.pow(1.1,cursors));
-	if(cookies >= cursorCost) {
-		cursors += 1;
-		cookies -= cursorCost;
+function buyBuilding() {
+	var buildingCost = Math.floor(10*Math.pow(1.1,buildings));
+	if(items >= buildingCost) {
+		buildings += 1;
+		items -= buildingCost;
 		display();
 	};
 }
 
 function save() {
 	var save = {
-		cookies: cookies,
-		cursors: cursors,
+		items: items,
+		buildings: buildings,
 	}
 	
 	try {
@@ -59,8 +59,8 @@ function save() {
 function load() {
 	var savegame = JSON.parse(localStorage.getItem("save"));
 	if(savegame) {
-		if(typeof savegame.cookies !== "undefined") cookies = savegame.cookies;
-		if(typeof savegame.cursors !== "undefined") cursors = savegame.cursors;
+		if(typeof savegame.items !== "undefined") items = savegame.items;
+		if(typeof savegame.buildings !== "undefined") buildings = savegame.buildings;
 	}
 	
 	display();
@@ -69,15 +69,15 @@ function load() {
 function reset() {
 	if(confirm("This will wipe all of your data! You will lose EVERYTHING! Are you sure?")) {
 		localStorage.removeItem("save");
-		cookies = 0;
-		cursors = 0;
+		items = 0;
+		buildings = 0;
 	}
 	display();
 }
 
 //Game loop
 window.setInterval(function(){
-	cookieClick(cursors);
+	itemClick(buildings);
 }, 1000);
 
 //Save loop

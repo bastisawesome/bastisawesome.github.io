@@ -17,14 +17,14 @@
 </script>
 </head>
 <body>
-<button type="button pointer noselect" onmousedown="cookieClick(1)">Click me!</button><br/>
-<span id="cookies">0</span> cookies<br/>
-<button type="button" onclick="buyCursor()">Buy!</button><br/>
-Cursors: <span id="cursors">0</span><br/>
-Cost: <span id="cursorCost">10</span><br/>
-<button type="button" onclick="save()">Save</button>
-<button type="button" onclick="load()">Load</button>
-<button type="button" onclick="reset()">Reset</button>
+<button type="button pointer noselect" onmousedown="itemClick(1)">Click me!</button><br/>
+<span id="items">0</span> items<br/>
+<button type="button" onclick="buyBuilding()">Buy!</button><br/>
+Buildings: <span id="buildings">0</span><br/>
+Cost: <span id="buildingCost">10</span><br/>
+<button type="button" onmousedown="save()">Save</button>
+<button type="button" onmousedown="load()">Load</button>
+<button type="button" onmousedown="reset()">Reset</button>
 
 <script type="text/javascript" src="main.js"></script>
 </body>
