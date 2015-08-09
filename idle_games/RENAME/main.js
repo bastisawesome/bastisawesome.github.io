@@ -22,7 +22,7 @@ function display() {
 }
 
 function prettify(input) {
-	var output = Math.round(input*1000000)/1000000);
+	var output = Math.round(input*1000000)/1000000;
 	return output;
 }
 
@@ -41,6 +41,7 @@ function buyCursor() {
 }
 
 function save() {
+	_gaq.push(['_trackEvent', 'My Game', 'Save']);
 	var save = {
 		cookies: cookies,
 		cursors: cursors,
@@ -79,3 +80,8 @@ function reset() {
 window.setInterval(function(){
 	cookieClick(cursors);
 }, 1000);
+
+//Save loop
+window.setInterval(function() {
+	save();
+}, 60000);
