@@ -43,7 +43,7 @@ function buyBuilding() {
 function save() {
 	var save = {
 		items: items,
-		buildings: buildings,
+		buildings: buildings
 	}
 	
 	try {
