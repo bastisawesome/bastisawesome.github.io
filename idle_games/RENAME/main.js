@@ -41,7 +41,6 @@ function buyCursor() {
 }
 
 function save() {
-	_gaq.push(['_trackEvent', 'My Game', 'Save']);
 	var save = {
 		cookies: cookies,
 		cursors: cursors,
