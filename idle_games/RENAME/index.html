@@ -21,20 +21,21 @@
 </head>
 <body>
 <noscript>Javascript is disabled</noscript>
-<button type="button pointer noselect" onmousedown="itemClick(1)">Click me!</button><br/>
-<span id="items">0</span> items<br/>
-<button type="button" onclick="buyBuilding()">Buy!</button><br/>
-Buildings: <span id="buildings">0</span><br/>
-Cost: <span id="buildingCost">10</span><br/>
+<button type="button pointer noselect" onmousedown="addRes('item',game.global.perClick)">Click me!</button><br/>
+<span id="item">0</span> items<br/>
+<button type="button" onclick="buyBuild('factory', 1)">Buy!</button><br/>
+Factories: <span id="factory">0</span><br/>
+Cost: <span id="factoryCost">10</span><br/>
 <button type="button" onmousedown="save()">Save</button>
 <button type="button" onmousedown="load()">Load</button>
 <button type="button" onmousedown="reset()">Reset</button>
-
+<span id="test"></span>
 <br/>
 <a href="http://www.wtfpl.net/"><img
        src="http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png"
        width="80" height="15" alt="WTFPL" /></a>
 
+<script type="text/javascript" src="objects.js"></script>
 <script type="text/javascript" src="main.js"></script>
 </body>
 </html>

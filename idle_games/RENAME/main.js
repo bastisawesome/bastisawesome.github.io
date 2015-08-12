@@ -1,8 +1,3 @@
-//Variables
-var items = 0;
-var buildings = 0;
-load();
-
 //Functions
 function write(id, value) {
 	try {
@@ -16,9 +11,14 @@ function write(id, value) {
 }
 
 function display() {
-	write("buildings", buildings);
-	write("items", items);
-	write("buildingCost", Math.floor(10*Math.pow(1.1,buildings)));
+	//Display items
+	for(obj in game.resources) {
+		write(game.resources[obj].name, game.resources[obj].amount);
+	}
+	for(obj in game.buildings) {
+		write(game.buildings[obj].name, game.buildings[obj].amount);
+		write((game.buildings[obj].name+"Cost"), prettify(game.buildings[obj].cost));
+	}
 }
 
 function prettify(input) {
@@ -26,61 +26,59 @@ function prettify(input) {
 	return output;
 }
 
-function itemClick(number) {
-	items += number;
-	display();
-}
-
-function buyBuilding() {
-	var buildingCost = Math.floor(10*Math.pow(1.1,buildings));
-	if(items >= buildingCost) {
-		buildings += 1;
-		items -= buildingCost;
-		display();
-	};
-}
-
 function save() {
-	var save = {
-		items: items,
-		buildings: buildings
-	}
-	
-	try {
-		localStorage.setItem("save",JSON.stringify(save));
-	}
-	catch(e) {
-		console.log("Problem saving to localStorage...");
-		console.log(e);
-		console.log("If this problem persists, please contact the developer.");
-	}
 }
 
 function load() {
-	var savegame = JSON.parse(localStorage.getItem("save"));
-	if(savegame) {
-		if(typeof savegame.items !== "undefined") items = savegame.items;
-		if(typeof savegame.buildings !== "undefined") buildings = savegame.buildings;
-	}
-	
-	display();
 }
 
 function reset() {
 	if(confirm("This will wipe all of your data! You will lose EVERYTHING! Are you sure?")) {
 		localStorage.removeItem("save");
-		items = 0;
-		buildings = 0;
+		//Reset global variables
+		game.global.perClick = 1;
+		
+		for(obj in game.resources) {
+			game.resources[obj].amount = 0;
+		}
+		
+		for(obj in game.buildings) {
+			game.buildings[obj].amount = 0;
+			game.buildings[obj].perSec = game.buildings[obj].oPerSec;
+			game.buildings[obj].cost = game.buildings[obj].oCost;
+		}
 	}
 	display();
 }
 
-//Game loop
+function addRes(name, amount) {
+	var res = game.resources[name];
+	res.amount += amount;
+	display();
+}
+
+function buyBuild(name, amount) {
+	var build = game.buildings[name];
+	if(game.resources[build.buyRes].amount >= build.cost) {
+		game.resources[build.buyRes].amount -= build.cost;
+		build.amount += amount;
+		build.cost = Math.ceil(build.cost * 1.17);
+	}
+	display();
+}
+
+//Game loops
 window.setInterval(function(){
-	itemClick(buildings);
+	//Increment resources
+	for(obj in game.buildings) {
+		var build = game.buildings[obj]
+		var res = game.resources[build.addRes];
+		res.amount += build.perSec * build.amount;
+	}
+	display();
 }, 1000);
 
 //Save loop
-window.setInterval(function() {
-	save();
-}, 60000);
+/*window.setInterval(function() {
+	//save();
+}, 60000);*/
