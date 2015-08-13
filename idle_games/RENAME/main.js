@@ -1,3 +1,5 @@
+load();
+
 //Functions
 function write(id, value) {
 	try {
@@ -27,14 +29,20 @@ function prettify(input) {
 }
 
 function save() {
+	localStorage.setItem("saveGame", JSON.stringify(game));
 }
 
 function load() {
+	var saveGame = JSON.parse(localStorage.getItem("saveGame"));
+	if(saveGame) {
+		game = saveGame;
+	}
+	display();
 }
 
 function reset() {
 	if(confirm("This will wipe all of your data! You will lose EVERYTHING! Are you sure?")) {
-		localStorage.removeItem("save");
+		localStorage.removeItem("saveGame");
 		//Reset global variables
 		game.global.perClick = 1;
 		
@@ -79,6 +87,6 @@ window.setInterval(function(){
 }, 1000);
 
 //Save loop
-/*window.setInterval(function() {
-	//save();
-}, 60000);*/
+window.setInterval(function() {
+	save();
+}, 120000);

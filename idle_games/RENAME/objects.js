@@ -1,6 +1,7 @@
 function loadVars() {
 	var toReturn = {
 		global: {
+			version: "0.0.1",
 			perClick: 1
 		},
 		resources: {
