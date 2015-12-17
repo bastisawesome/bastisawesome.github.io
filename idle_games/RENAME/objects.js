@@ -46,7 +46,36 @@ function loadVars() {
             },
         },
         upgrades: {
-            //TODO Work on upgrades
+            /**
+             * @var name:           Name of the upgrade
+             * @var unlocked:       If the upgrade is unlocked
+             * @var purchased:      If the upgrade is purchased
+             * @var buyRes:         Resource to be spent buying the upgrade
+             * @var cost:           Price of the upgrade
+             * @var addGroup:       What group to upgrade from [global|resources|buildings]
+             * @var addObject:      What object to upgrade
+             * @var boost:          How much to boost (multiplicative)
+             */
+            factoryBoost: {
+                name: "Factory Boost",
+                unlocked: true,
+                purchased: false,
+                buyRes: "item",
+                cost: 1000,
+                addGroup: "buildings",
+                addObject: "factory",
+                boost: 2
+            },
+            buildingBoost: {
+                name: "Building Boost",
+                unlocked: true,
+                purchased: false,
+                buyRes: "item",
+                cost: 10000,
+                addGroup: "buildings",
+                addObject: "building",
+                boost: 2
+            },
         },
         achievements: {
             //TODO Work on achievements

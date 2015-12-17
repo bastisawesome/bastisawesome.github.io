@@ -39,7 +39,6 @@ function generateDisplay() {
     }
     //Builds the buildings HTML
     for(var obj in game.buildings) {
-        //Read the building
         //Generate buy button
         out += "<button id='" + game.buildings[obj].name + "Buy' onClick='buyBuild("
                + JSON.stringify(game.buildings[obj].name) + ", 1)'>Purchase " 
@@ -50,6 +49,21 @@ function generateDisplay() {
         //Generate cost display
         out += "Cost: <span id='" + game.buildings[obj].name + "Cost'>"
                + game.buildings[obj].cost + "</span><br/>"
+    }
+    
+    //Builds upgrades HTML
+    
+    for(var obj in game.upgrades) {
+        upg = game.upgrades[obj];
+        if(upg.purchased == false) {
+            out += "<span id='" + fix(upg.name) + "'><button onClick='buyUpg(" 
+                   + JSON.stringify(fix(upg.name))
+                   + ")'>Purchase " + upg.name + "<br/>Cost: " + upg.cost + " " + upg.buyRes + "s"
+                   + "</button></span><br/>";
+        }
+        else {
+            out += "<span id='" + fix(upg.name) + "'>" + upg.name + " purchased</span><br/>";
+        }
     }
     
     //Display
@@ -77,6 +91,11 @@ function display() {
 		write(game.buildings[obj].name + "Amount", game.buildings[obj].amount);
 		write((game.buildings[obj].name+"Cost"), prettify(game.buildings[obj].cost));
 	}
+	for(var obj in game.upgrades) {
+        if(game.upgrades[obj].purchased == true) {
+            write(fix(game.upgrades[obj].name), "<span>" + upg.name + " purchased</span><br/>")
+        }
+    }
 }
 
 function prettify(input) {
@@ -113,7 +132,7 @@ function reset() {
 			game.buildings[obj].cost = game.buildings[obj].oCost;
 		}
 	}
-	display();
+	generateDisplay();
 }
 
 function addRes(name, amount) {
@@ -134,6 +153,31 @@ function buyBuild(building, amount) {
 		build.cost = Math.ceil(build.cost * 1.17);
 	}
 	display();
+}
+
+function buyUpg(name) {
+    /**
+     * Stores the upgrade information
+     */
+    var upg = game.upgrades[name];
+    
+    if(game.resources[upg.buyRes].amount >= upg.cost) {
+        game.resources[upg.buyRes].amount -= upg.cost;
+        
+        //Boost buildings
+        if(upg.addGroup === "buildings") {
+            game.buildings[upg.addObject].perSec *= upg.boost;
+        }
+        
+        upg.purchased = true;
+    }
+    display();
+}
+
+function fix(string) {
+    string = string.replace(" ", "");
+    string = string.charAt(0).toLowerCase() + string.slice(1)
+    return string;
 }
 
 //Game loops
