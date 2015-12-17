@@ -1,0 +1,5 @@
+How to update git repository
+git add --all
+git add [directories/files]
+git commit [change]
+git push -u origin master

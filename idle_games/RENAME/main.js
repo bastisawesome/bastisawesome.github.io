@@ -1,12 +1,68 @@
 load();
 
 //Functions
+/**
+ * Reads the objects from game and then generates the HTML from it.
+*/
+function generateDisplay() {
+    /**
+     * Holds the global variables from the game object
+     */
+    var gglob = game.global;
+    /**
+     * Holds the resources from the game object
+     */
+    var gres = game.resources;
+    /**
+     * Holds the buildings from the game object
+     */
+    var gbuilds = game.buildings;
+    /**
+     * Holds the upgrades from the game object
+     */
+    var gups = game.upgrades;
+    /**
+     * Holds the achievements from the game object
+     */
+    var gcheevos = game.achievements;
+    
+    /**
+     * Contains the HTML to be displayed.
+     */
+    var out = ""
+    
+    // Begin generating the HTML necessary
+    //Builds the resources HTML
+    for(var obj in game.resources) {
+        out += game.resources[obj].name + ": <span id='" + game.resources[obj].name
+               + "'>0</span><br/>"
+    }
+    //Builds the buildings HTML
+    for(var obj in game.buildings) {
+        //Read the building
+        //Generate buy button
+        out += "<button id='" + game.buildings[obj].name + "Buy' onClick='buyBuild("
+               + JSON.stringify(game.buildings[obj].name) + ", 1)'>Purchase " 
+               + game.buildings[obj].name + "</button><br/>";
+        //Generate information display
+        out += "<span id='" + game.buildings[obj].name + "'>" + game.buildings[obj].name
+               + "</span> Amount: <span id='" + game.buildings[obj].name + "Amount'>0</span><br/>";
+        //Generate cost display
+        out += "Cost: <span id='" + game.buildings[obj].name + "Cost'>"
+               + game.buildings[obj].cost + "</span><br/>"
+    }
+    
+    //Display
+    write("tempName", out);
+}
+
 function write(id, value) {
 	try {
 		document.getElementById(id).innerHTML = value;
 	}
 	catch(e) {
 		console.log("Problem displaying...");
+        console.log(id);
 		console.log(e);
 		console.log("If this problem persists, please contant the developer");
 	}
@@ -14,11 +70,11 @@ function write(id, value) {
 
 function display() {
 	//Display items
-	for(obj in game.resources) {
+	for(var obj in game.resources) {
 		write(game.resources[obj].name, game.resources[obj].amount);
 	}
-	for(obj in game.buildings) {
-		write(game.buildings[obj].name, game.buildings[obj].amount);
+	for(var obj in game.buildings) {
+		write(game.buildings[obj].name + "Amount", game.buildings[obj].amount);
 		write((game.buildings[obj].name+"Cost"), prettify(game.buildings[obj].cost));
 	}
 }
@@ -37,7 +93,8 @@ function load() {
 	if(saveGame) {
 		game = saveGame;
 	}
-	display();
+    generateDisplay();
+	//display();
 }
 
 function reset() {
@@ -65,8 +122,12 @@ function addRes(name, amount) {
 	display();
 }
 
-function buyBuild(name, amount) {
-	var build = game.buildings[name];
+function buyBuild(building, amount) {
+    /**
+     * Stores building information, in theory
+     */
+	var build = game.buildings[building.toLowerCase()];
+    
 	if(game.resources[build.buyRes].amount >= build.cost) {
 		game.resources[build.buyRes].amount -= build.cost;
 		build.amount += amount;
@@ -76,7 +137,7 @@ function buyBuild(name, amount) {
 }
 
 //Game loops
-window.setInterval(function(){
+var disTime = window.setInterval(function(){
 	//Increment resources
 	for(obj in game.buildings) {
 		var build = game.buildings[obj]
@@ -87,6 +148,6 @@ window.setInterval(function(){
 }, 1000);
 
 //Save loop
-window.setInterval(function() {
+var saveTime = window.setInterval(function() {
 	save();
 }, 120000);
