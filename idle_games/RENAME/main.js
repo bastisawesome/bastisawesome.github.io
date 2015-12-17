@@ -131,6 +131,10 @@ function reset() {
 			game.buildings[obj].perSec = game.buildings[obj].oPerSec;
 			game.buildings[obj].cost = game.buildings[obj].oCost;
 		}
+		
+		for(obj in game.upgrades) {
+            game.upgrades[obj].purchased = false
+        }
 	}
 	generateDisplay();
 }
