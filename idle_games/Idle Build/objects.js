@@ -79,7 +79,7 @@ function loadVars() {
                 cost: 100,
                 unlocked: true
             },
-            /*hardwareStore: {
+            hardwareStore: {
                 name: "Hardware Store",
                 amount: 0,
                 buyRes: "money",
@@ -90,7 +90,7 @@ function loadVars() {
                 oCost: 250,
                 cost: 250,
                 unlocked: true
-            },*/
+            },
             steelMill: {
                 name: "Steel Mill",
                 amount: 0,
