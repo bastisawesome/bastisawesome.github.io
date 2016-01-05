@@ -40,7 +40,6 @@ function loadVars() {
                 * @var amount:      Amount of the building
                 * @var buyRes:      Resource to be spent to buy building
                 * @var addRes:      Resource to be boosted by building
-                * @var oPerSec:     Original boosted amount (used for calculations)
                 * @var perSec:      Boosted amount per second
                 * @var oCost:       Original cost of building (used for calculations)
                 * @var cost:        Cost of the building. Increases by some amount.
@@ -51,7 +50,6 @@ function loadVars() {
                 amount: 0,
                 buyRes: "money",
                 addRes: "ironOre",
-                oPerSec: 1,
                 perSec: 1,
                 oCost: 15,
                 cost: 15,
@@ -64,7 +62,6 @@ function loadVars() {
                 addRes: "money",
                 useRes: "ironOre",
                 useAmt: 5,
-                oPerSec: 1,
                 perSec: 1,
                 oCost: 250,
                 cost: 250,
@@ -77,25 +74,23 @@ function loadVars() {
                 addRes: "iron",
                 useRes: "ironOre",
                 useAmt: 1,
-                oPerSec: 1,
                 perSec: 1,
                 oCost: 100,
                 cost: 100,
                 unlocked: true
             },
-            hardwareStore: {
+            /*hardwareStore: {
                 name: "Hardware Store",
                 amount: 0,
                 buyRes: "money",
                 addRes: "money",
                 useRes: "iron",
                 useAmt: 5,
-                oPerSec: 25,
                 perSec: 25,
                 oCost: 250,
                 cost: 250,
                 unlocked: true
-            },
+            },*/
             steelMill: {
                 name: "Steel Mill",
                 amount: 0,
@@ -103,7 +98,6 @@ function loadVars() {
                 addRes: "steel",
                 useRes: "iron",
                 useAmt: 2,
-                oPerSec: 1,
                 perSec: 1,
                 oCost: 100,
                 cost: 100,
@@ -116,7 +110,6 @@ function loadVars() {
                 addRes: "money",
                 useRes: "steel",
                 useAmt: 5,
-                oPerSec: 50,
                 perSec: 50,
                 oCost: 500,
                 cost: 500,

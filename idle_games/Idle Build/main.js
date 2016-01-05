@@ -1,5 +1,4 @@
-generateDisplay()
-
+write('versionDisplay', game.global.version);
 //Functions
 /**
  * Reads the objects from game and then generates the HTML from it.
@@ -132,22 +131,6 @@ function prettify(input) {
 function reset() {
 	if(confirm("This will wipe all of your data! You will lose EVERYTHING! Are you sure?")) {
 		localStorage.removeItem("saveGame");
-		//Reset global variables
-		game.global.perClick = 1;
-		
-		for(obj in game.resources) {
-			game.resources[obj].amount = 0;
-		}
-		
-		for(obj in game.buildings) {
-			game.buildings[obj].amount = 0;
-			game.buildings[obj].perSec = game.buildings[obj].oPerSec;
-			game.buildings[obj].cost = game.buildings[obj].oCost;
-		}
-		
-		for(obj in game.upgrades) {
-            game.upgrades[obj].purchased = false
-        }
         game = loadVars();
         generateDisplay();
 	}
@@ -191,7 +174,7 @@ function buyUpg(name) {
     if(game.resources[upg.buyRes].amount >= upg.cost) {
         game.resources[upg.buyRes].amount -= upg.cost;
         
-        //Boost buildings
+        /*//Boost buildings
         if(upg.addGroup === "buildings") {
             game.buildings[upg.addObject].perSec *= upg.boost;
         }
@@ -199,7 +182,7 @@ function buyUpg(name) {
         //Boost click
         if(upg.addGroup === "global") {
             game.global[upg.addObject] *= upg.boost;
-        }
+        }*/
         
         upg.purchased = true;
     }
@@ -237,7 +220,7 @@ function unlockUpg() {
 //Game loops
 var incTime = window.setInterval(function(){
 	//Increment resources
-	for(obj in game.buildings) {
+	for(var obj in game.buildings) {
 		var build = game.buildings[obj]
 		var res = game.resources[build.addRes];
         if(build.useRes != undefined) {
@@ -246,18 +229,20 @@ var incTime = window.setInterval(function(){
                 res.amount += build.perSec * build.amount;
             }
         }
-        else
-            res.amount += build.perSec * build.amount;
+        else {
+            //Used to determine the multiplier for upgerades
+            var upgInc = 1;
+            for(var obj in game.upgrades) {
+                if(game.upgrades[obj].addGroup == 'buildings') {
+                    if(game.upgrades[obj].addObject == build.name) {
+                        upgInc *= game.upgrades[obj].boost;
+                    }
+                }
+            }
+            res.amount += (build.perSec* upgInc) * build.amount;
+        }
 	}
 	display();
-    if(game.resources.money.amount >= 1000000) {
-        alert("YOU EFFING WIN!");
-        delete incTime;
-        delete saveTime;
-        delete upgTime;
-        alert("Your game has now been ended.");
-        delete game;
-    }
 }, 1000);
 
 //Unlocks upgrades when it is supposed to
@@ -268,30 +253,70 @@ var upgTime = window.setInterval(function() {
 /****************************************
  *************SAVE STUFFS!!!*************
  ****************************************/
-function save(tier=1, stuff=false) {
-    saveStr = '';
+function save() {
+    //Copies the game object over to a copy
+    var gameCp = JSON.parse(JSON.stringify(game));
+    //Cleanup the game copy
     
-    if(tier >= 1 && stuff==true) {
-        for(i in game) {
-            console.log(i);
-            if(tier >= 2) {
-                for(a in game[i]) {
-                    console.log('\t' + a)
-                    if(tier >= 3) {
-                        for(b in game[i][a]) {
-                            console.log('\t\t' + b)
-                            if(tier >= 4) {
-                                for(c in game[i][a][b]) {
-                                    console.log('\t\t\t' + c)
-                                }
-                            }
-                        }
-                    }
+    //Remove useless global variables
+    delete gameCp['global'].multiplier;
+    delete gameCp['global'].perClick;
+    
+    for(var obj in gameCp['resources']) {
+        delete gameCp['resources'][obj].name;
+        delete gameCp['resources'][obj].sellable;
+        delete gameCp['resources'][obj].sellAmt;
+        delete gameCp['resources'][obj].value;
+    }
+    for(var obj in gameCp['buildings']) {
+        delete gameCp['buildings'][obj].name;
+        delete gameCp['buildings'][obj].buyRes;
+        delete gameCp['buildings'][obj].addRes;
+        delete gameCp['buildings'][obj].useRes;
+        delete gameCp['buildings'][obj].useAmt;
+        delete gameCp['buildings'][obj].perSec;
+        delete gameCp['buildings'][obj].oCost;
+    }
+    for(var obj in gameCp['upgrades']) {
+        var a = gameCp['upgrades'][obj];
+        delete a.name;
+        delete a.buyRes;
+        delete a.cost;
+        delete a.addGroup;
+        delete a.addObject;
+        delete a.req;
+        delete a.boost;
+    }
+    var saveStr = {};
+    for(var a in gameCp) {
+        saveStr[a] = gameCp[a];
+        for(var b in gameCp[a]) {
+            saveStr[a][b] = gameCp[a][b];
+            for(var c in gameCp[a][b]) {
+                saveStr[a][b][c] = gameCp[a][b][c];
+            }
+        }
+    }
+    localStorage.setItem('saveGame', JSON.stringify(saveStr));
+}
+
+function load() {
+    var saveStr = JSON.parse(localStorage.getItem('saveGame'));
+    if(saveStr) {
+        for(var a in saveStr) {
+            for(var b in saveStr[a]) {
+                for(var c in saveStr[a][b]) {
+                    game[a][b][c] = saveStr[a][b][c] || game[a][b][c];
                 }
             }
         }
     }
+    generateDisplay();
 }
 
-function load() {
-}
+var saveTime = window.setInterval(function() {
+    save();
+}, 1000);
+
+//Last line of code:
+load();
