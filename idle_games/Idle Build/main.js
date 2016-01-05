@@ -138,7 +138,13 @@ function reset() {
 
 function addRes(name, amount) {
 	var res = game.resources[name];
-	res.amount += amount;
+    var inc = 1;
+    for(var obj in game['upgrades']) {
+        if(game['upgrades'][obj].addObject === 'perClick')
+            if(game['upgrades'][obj].purchased)
+                inc *= game['upgrades'][obj].boost;
+    }
+	res.amount += amount*inc;
 	display();
 }
 
@@ -229,18 +235,17 @@ var incTime = window.setInterval(function(){
                 res.amount += build.perSec * build.amount;
             }
         }
-        else {
-            //Used to determine the multiplier for upgerades
-            var upgInc = 1;
-            for(var obj in game.upgrades) {
-                if(game.upgrades[obj].addGroup == 'buildings') {
-                    if(game.upgrades[obj].addObject == build.name) {
-                        upgInc *= game.upgrades[obj].boost;
-                    }
+        //Used to determine the multiplier for upgrades
+        var upgInc = 1;
+        for(var a in game.upgrades) {
+            if(game.upgrades[a].addGroup === 'buildings') {
+                if(game.upgrades[a].addObject === fix(build.name)) {
+                    if(game.upgrades[a].purchased == true)
+                        upgInc *= game.upgrades[a].boost;
                 }
             }
-            res.amount += (build.perSec* upgInc) * build.amount;
         }
+        res.amount += (build.perSec * upgInc) * build.amount;
 	}
 	display();
 }, 1000);
@@ -316,7 +321,7 @@ function load() {
 
 var saveTime = window.setInterval(function() {
     save();
-}, 1000);
+}, 60000);
 
 //Last line of code:
 load();
