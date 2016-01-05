@@ -1,4 +1,4 @@
-load();
+generateDisplay()
 
 //Functions
 /**
@@ -36,12 +36,20 @@ function generateDisplay() {
     for(var obj in game.resources) {
         out += game.resources[obj].name + ": <span id='" + fix(game.resources[obj].name)
                + "'>" + prettify(game.resources[obj].amount) + "</span><br/>"
+    }
+    
+    out += "<br/>";
+    
+    for(var obj in game.resources) {
         if(game.resources[obj].sellable == true) {
             out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
-                   + ", " + game.resources[obj].sellAmt + ")'>Sell "
-                   + game.resources[obj].name + "</button><br/>";
+                   + ", " + game.resources[obj].sellAmt + ")'>Sell 5 "
+                   + game.resources[obj].name + "<br/>For " 
+                   + game.resources[obj].value*5 + " money</button><br/>";
         }
     }
+    out += "<br/>";
+    
     //Builds the buildings HTML
     for(var obj in game.buildings) {
         //Generate buy button
@@ -56,8 +64,9 @@ function generateDisplay() {
                + game.buildings[obj].cost + " " + game.buildings[obj].buyRes + "</span></button><br/>"
     }
     
-    //Builds upgrades HTML
+    out += "<br/>";
     
+    //Builds upgrades HTML
     for(var obj in game.upgrades) {
         var upg = game.upgrades[obj];
         out += "<span id='" + fix(upg.name) + "'";
@@ -118,51 +127,6 @@ function display() {
 function prettify(input) {
 	var output = Math.round(input*1000000)/1000000;
 	return output;
-}
-
-/**
- * @deprecated Unable to solve saving and loading issue. This has been removed
- * in order to release the next version as fully functional.
- */
-/*function save() {
-    var saveGame = "";
-    for(var group in game) {
-        for(var obj in game[group]) {
-            saveGame += JSON.stringify(obj + ":");
-            for(var i in game[group][obj]) {
-                saveGame += JSON.stringify(game[group][obj][i] + ",");
-            }
-        }
-        saveGame += "|";
-    }
-	localStorage.setItem("saveGame", JSON.stringify(saveGame));
-}*/
-
-function load() {
-	/*var saveGame = JSON.parse(localStorage.getItem("saveGame"));
-	if(saveGame) {
-		var saveString1 = saveGame.split("|");
-        for(var i=0; i<saveString1.length; i++) {
-            var temp = saveString1[0].split(",");
-            if(temp[0] !== JSON.stringify(game.global.version)) {
-                for(var group in game) {
-                    for(var a=0; a<saveString1.length; a++) {
-                        var saveString2 = saveString1[a].split(",");
-                        for(var obj in game[group]) {
-                            for(var i in game[group][obj]) {
-                                for(var b=0; b<saveString2.length; b++) {
-                                    //game[group][obj][i] = saveString2[b];
-                                    console.log(game[group][obj][i] + " " + saveString2[b]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-	}*/
-    generateDisplay();
-	//display();
 }
 
 function reset() {
@@ -296,12 +260,38 @@ var incTime = window.setInterval(function(){
     }
 }, 1000);
 
-//Save loop
-/*var saveTime = window.setInterval(function() {
-	save();
-}, 120000);*/
-
 //Unlocks upgrades when it is supposed to
 var upgTime = window.setInterval(function() {
     unlockUpg();
 }, 1000)
+
+/****************************************
+ *************SAVE STUFFS!!!*************
+ ****************************************/
+function save(tier=1, stuff=false) {
+    saveStr = '';
+    
+    if(tier >= 1 && stuff==true) {
+        for(i in game) {
+            console.log(i);
+            if(tier >= 2) {
+                for(a in game[i]) {
+                    console.log('\t' + a)
+                    if(tier >= 3) {
+                        for(b in game[i][a]) {
+                            console.log('\t\t' + b)
+                            if(tier >= 4) {
+                                for(c in game[i][a][b]) {
+                                    console.log('\t\t\t' + c)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+function load() {
+}

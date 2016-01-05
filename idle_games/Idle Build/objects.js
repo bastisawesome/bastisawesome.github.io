@@ -270,7 +270,7 @@ function loadVars() {
         },
         achievements: {
             //TODO Work on achievements
-        },
+        }
 };
 
 return toReturn;
