@@ -53,7 +53,10 @@ function loadVars() {
                 perSec: 1,
                 oCost: 15,
                 cost: 15,
-                unlocked: true,
+                reqGroup: "resources",
+                reqObject: "money",
+                reqAmt: 15,
+                unlocked: false
             },
             marketplace: {
                 name: "Marketplace",
@@ -63,9 +66,12 @@ function loadVars() {
                 useRes: "ironOre",
                 useAmt: 5,
                 perSec: 1,
-                oCost: 250,
-                cost: 250,
-                unlocked: true
+                oCost: 150,
+                cost: 150,
+                reqGroup: 'buildings',
+                reqObject: 'mine',
+                reqAmt: 5,
+                unlocked: false
             },
             smeltery: {
                 name: "Smeltery",
@@ -75,9 +81,12 @@ function loadVars() {
                 useRes: "ironOre",
                 useAmt: 1,
                 perSec: 1,
-                oCost: 100,
-                cost: 100,
-                unlocked: true
+                oCost: 250,
+                cost: 250,
+                reqGroup: 'resources',
+                reqObject: 'money',
+                reqAmt: 250,
+                unlocked: false
             },
             hardwareStore: {
                 name: "Hardware Store",
@@ -89,7 +98,10 @@ function loadVars() {
                 perSec: 25,
                 oCost: 250,
                 cost: 250,
-                unlocked: true
+                reqGroup: 'buildings',
+                reqObject: 'smeltery',
+                reqAmt: 5,
+                unlocked: false
             },
             steelMill: {
                 name: "Steel Mill",
@@ -101,7 +113,10 @@ function loadVars() {
                 perSec: 1,
                 oCost: 100,
                 cost: 100,
-                unlocked: true
+                reqGroup: 'resources',
+                reqObject: 'iron',
+                reqAmt: 100,
+                unlocked: false
             },
             steelMarketplace: {
                 name: "Steel Marketplace",
@@ -113,7 +128,10 @@ function loadVars() {
                 perSec: 50,
                 oCost: 500,
                 cost: 500,
-                unlocked: true
+                reqGroup: 'buildings',
+                reqObject: 'steelMill',
+                reqAmt: 5,
+                unlocked: false
             },
         },
         upgrades: {

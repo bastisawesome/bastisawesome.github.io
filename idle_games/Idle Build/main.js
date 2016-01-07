@@ -42,7 +42,7 @@ function generateDisplay() {
     for(var obj in game.resources) {
         if(game.resources[obj].sellable == true) {
             out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
-                   + ", " + game.resources[obj].sellAmt + ")'>Sell 5 "
+                   + ", " + 5 + ")'>Sell 5 "
                    + game.resources[obj].name + "<br/>For " 
                    + game.resources[obj].value*5 + " money</button><br/>";
         }
@@ -51,16 +51,21 @@ function generateDisplay() {
     
     //Builds the buildings HTML
     for(var obj in game.buildings) {
+        var build = game.buildings[obj];
         //Generate buy button
+        out += "<span id='" + fix(build.name) + "'";
+        if(!build.unlocked)
+            out += " style='display:none'";
+        out += ">";
         out += "<button id='" + fix(game.buildings[obj].name) + "Buy' onClick='buyBuild("
-               + JSON.stringify(fix(game.buildings[obj].name)) + ", 1)'>Purchase " 
-               + game.buildings[obj].name;
+            + JSON.stringify(fix(game.buildings[obj].name)) + ", 1)'>Purchase " 
+            + game.buildings[obj].name;
         //Generate information display
-        out += "</span><br/>Amount: <span id='" + fix(game.buildings[obj].name) 
-               + "Amount'>0</span><br/>";
+        out += "<br/>Amount: <span id='" + fix(game.buildings[obj].name) 
+            + "Amount'>" + build.amount + "</span><br/>";
         //Generate cost display
         out += "Cost: <span id='" + fix(game.buildings[obj].name) + "Cost'>"
-               + game.buildings[obj].cost + " " + game.buildings[obj].buyRes + "</span></button><br/>"
+            + game.buildings[obj].cost + " " + game.buildings[obj].buyRes + "</span></button></span><br/>"
     }
     
     out += "<br/>";
@@ -79,7 +84,7 @@ function generateDisplay() {
                    + "</button><br/></span>";
         }
         else if(upg.purchased == true) {
-            out += upg.name + "purchased<br/></span>";
+            out += upg.name + " purchased<br/></span>";
         }
     }
     
@@ -88,7 +93,7 @@ function generateDisplay() {
 }
 
 function write(id, value) {
-	try {
+    try {
 		document.getElementById(id).innerHTML = value;
 	}
 	catch(e) {
@@ -103,11 +108,23 @@ function display() {
 	//Display items
 	for(var obj in game.resources) {
 		write(fix(game.resources[obj].name), prettify(game.resources[obj].amount));
+        var res = game.resources[obj];
+        if(res.sellable) {
+            if(res.amount >= 100)
+                document.getElementById(res.name+"Sell10").style.display = "inline";
+        }
 	}
 	for(var obj in game.buildings) {
-		write(fix(game.buildings[obj].name) + "Amount", game.buildings[obj].amount);
-		write((fix(game.buildings[obj].name)+"Cost"), prettify(game.buildings[obj].cost) + " "
-            + game.buildings[obj].buyRes);
+        var build = game.buildings[obj]
+        if(build.unlocked) {
+            write(fix(game.buildings[obj].name) + "Amount", game.buildings[obj].amount);
+            write((fix(game.buildings[obj].name)+"Cost"), prettify(game.buildings[obj].cost) + " "
+                + game.buildings[obj].buyRes);
+            document.getElementById(fix(build.name)).style.display = "inline";
+        }
+        else {
+            document.getElementById(fix(build.name)).style.display = "none";
+        }
 	}
 	for(var obj in game.upgrades) {
         if(game.upgrades[obj].purchased == true) {
@@ -223,36 +240,51 @@ function unlockUpg() {
     }
 }
 
+function unlockBuild() {
+    for(var obj in game.buildings) {
+        var build = game.buildings[obj];
+        if(!build.unlocked) {
+            if(game[build.reqGroup][build.reqObject].amount >= build.reqAmt) {
+                build.unlocked = true;
+                display();
+            }
+        }
+    }
+}
+
 //Game loops
 var incTime = window.setInterval(function(){
 	//Increment resources
 	for(var obj in game.buildings) {
-		var build = game.buildings[obj]
-		var res = game.resources[build.addRes];
-        if(build.useRes != undefined) {
-            if(game.resources[build.useRes].amount >= build.useAmt * build.amount) {
-                game.resources[build.useRes].amount -= build.useAmt * build.amount;
-                res.amount += build.perSec * build.amount;
-            }
-        }
-        //Used to determine the multiplier for upgrades
-        var upgInc = 1;
-        for(var a in game.upgrades) {
-            if(game.upgrades[a].addGroup === 'buildings') {
-                if(game.upgrades[a].addObject === fix(build.name)) {
-                    if(game.upgrades[a].purchased == true)
-                        upgInc *= game.upgrades[a].boost;
+        if(game.buildings[obj].unlocked) {
+            var build = game.buildings[obj];
+            var res = game.resources[build.addRes];
+            if(build.useRes) {
+                if(game.resources[build.useRes].amount >= build.useAmt * build.amount) {
+                    game.resources[build.useRes].amount -= build.useAmt * build.amount;
+                    //res.amount += build.perSec * build.amount;
                 }
             }
+            //Used to determine the multiplier for upgrades
+            var upgInc = 1;
+            for(var a in game.upgrades) {
+                if(game.upgrades[a].addGroup === 'buildings') {
+                    if(game.upgrades[a].addObject === fix(build.name)) {
+                        if(game.upgrades[a].purchased == true)
+                            upgInc *= game.upgrades[a].boost;
+                    }
+                }
+            }
+            res.amount += (build.perSec * upgInc) * build.amount;
         }
-        res.amount += (build.perSec * upgInc) * build.amount;
 	}
 	display();
 }, 1000);
 
-//Unlocks upgrades when it is supposed to
-var upgTime = window.setInterval(function() {
+//Unlocks various things when it is supposed to
+var unlTime = window.setInterval(function() {
     unlockUpg();
+    unlockBuild();
 }, 1000)
 
 /****************************************
