@@ -109,10 +109,6 @@ function display() {
 	for(var obj in game.resources) {
 		write(fix(game.resources[obj].name), prettify(game.resources[obj].amount));
         var res = game.resources[obj];
-        if(res.sellable) {
-            if(res.amount >= 100)
-                document.getElementById(res.name+"Sell10").style.display = "inline";
-        }
 	}
 	for(var obj in game.buildings) {
         var build = game.buildings[obj]
