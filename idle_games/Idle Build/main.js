@@ -65,10 +65,16 @@ function generateDisplay() {
             + "Amount'>" + build.amount + "</span><br/>";
         //Generate cost display
         out += "Cost: <span id='" + fix(game.buildings[obj].name) + "Cost'>"
-            + game.buildings[obj].cost + " " + game.buildings[obj].buyRes + "</span></button></span><br/>"
+            + game.buildings[obj].cost + " " + game.buildings[obj].buyRes + "</span></button></span>";
+        out += "<br/>";
     }
     
-    out += "<br/>";
+    for(var i in game.buildings) {
+        if(game.buildings[i].unlocked) {
+            out += "<br/>";
+            break;
+        }
+    }
     
     //Builds upgrades HTML
     for(var obj in game.upgrades) {
@@ -137,7 +143,55 @@ function display() {
 }
 
 function prettify(input) {
-	var output = Math.round(input*1000000)/1000000;
+    var output = '';
+    output = input;
+    /*
+     *********************
+     ******Thousands******
+     *********************
+     */
+    if(input < 1000)
+        output = Math.round(output*1000000)/1000000;
+    if(input >= 1000 && input < 1000000) {
+        output = (input/1000);
+        if(input % 1000 >= 10)
+            output = output.toFixed(2);
+        else
+            output = Math.round(output);
+        output = output.toString()
+        output += 'k';
+    }
+    
+    /*
+     ********************
+     ******Millions******
+     ********************
+     */
+    if(input >= 1000000 && input < 100000000) {
+        output = (input/1000000);
+        if(input%1000000 >= 100)
+            output = output.toFixed(2);
+        else
+            output = Math.round(output);
+        output = output.toString();
+        output += 'M';
+    }
+    
+    /*
+     ********************
+     ******Billions******
+     ********************
+     */
+    if(input >= 100000000 && input < 100000000000) {
+        output = (input/100000000);
+        if(input%100000000 >= 1000)
+            output = output.toFixed(2);
+        else
+            output = Math.round(output);
+        output = output.toString();
+        output += 'B';
+    }
+    
 	return output;
 }
 
