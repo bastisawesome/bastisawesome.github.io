@@ -23,12 +23,12 @@
 </head>
 <body>
 <noscript>Javascript is disabled</noscript>
-<button type="button pointer noselect" onmousedown="addRes('ironOre',game.global.perClick);game.global.amtClicked++">Mine Iron</button><br/>
-<span id="tempName"></span><br/>
-<button type="button" onmousedown="save()">Save</button>
-<button type="button" onmousedown="load()">Load</button>
-<button type="button" onmousedown="reset()">Reset</button>
-<span id="test"></span>
+<button id='clickButton' type="button pointer noselect">Mine Iron</button><br/>
+<span id="tempName"></span>
+<span id='randEvents'></span>
+<button type="button" onclick="save()">Save</button>
+<button type="button" onclick="load()">Load</button>
+<button type="button" onclick="reset()">Reset</button>
 <br/>
 <a href="http://www.wtfpl.net/"><img
        src="http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png"
