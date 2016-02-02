@@ -96,7 +96,7 @@ function generateDisplay() {
                    + "<span id='" + fix(upg.name) + "Desc'>" + upg.desc + "</span><br/></button><br/></span>";
         }
         else if(upg.purchased == true) {
-            out += upg.name + " purchased<br/></span>";
+            out += upg.dispName + " purchased<br/></span>";
         }
     }
     
@@ -142,7 +142,7 @@ function display() {
 	}
 	for(var obj in game.upgrades) {
         if(game.upgrades[obj].purchased == true) {
-            write(fix(game.upgrades[obj].name), "<span>" + game.upgrades[obj].name
+            write(fix(game.upgrades[obj].name), "<span>" + game.upgrades[obj].dispName
             + " purchased</span><br/>");
         }
         else if(game.upgrades[obj].unlocked == true) {
