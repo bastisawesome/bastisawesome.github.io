@@ -197,8 +197,8 @@ function prettify(input) {
 	return output;
 }
 
-function reset() {
-	if(confirm("This will wipe all of your data! You will lose EVERYTHING! Are you sure?")) {
+function reset(skipConf) {
+	if(skipConf || confirm("This will wipe all of your data! You will lose EVERYTHING! Are you sure?")) {
 		localStorage.removeItem("saveGame");
         game = loadVars();
         generateDisplay();
@@ -531,7 +531,7 @@ function load() {
     if(saveStr) {
         if(saveStr.global.version === "0.0.1") {
             alert('Unfortunately, do to some updating, your save has to be wiped. Sorry. :(');
-            reset();
+            reset(true);
             return;
         }
         for(var a in saveStr) {
