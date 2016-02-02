@@ -478,7 +478,6 @@ function save() {
     //Cleanup the game copy
     
     //Remove useless global variables
-    delete gameCp['global'].version;
     delete gameCp['global'].multiplier;
     delete gameCp['global'].perClick;
     
