@@ -44,9 +44,9 @@ function generateDisplay() {
     for(var obj in game.resources) {
         if(game.resources[obj].sellable == true) {
             out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
-                   + ", " + 5 + ")'>Sell 5 "
+                   + ", " + game.resources[obj].sellAmt + ")'>Sell " + game.resources[obj].sellAmt + ' '
                    + game.resources[obj].name + "<br/>For " 
-                   + game.resources[obj].value*5 + " money</button><br/>";
+                   + game.resources[obj].value*game.resources[obj].sellAmt + " money</button><br/>";
         }
     }
     out += "<br/>";
@@ -68,7 +68,7 @@ function generateDisplay() {
         //Generate cost display
         out += "Cost: <span id='" + fix(game.buildings[obj].name) + "Cost'>";
         for(var i=0; i<build.buyRes.length; i++) {
-            out += game.buildings[obj].cost[i] + " " + game.buildings[obj].buyRes[i] + "<br/>";
+            out += game.buildings[obj].cost[i] + " " + game.resources[game.buildings[obj].buyRes[i]].name + "<br/>";
         }
         out += "</span>";
         out += "<span id='" + fix(build.name) + "Desc'>" + build.desc + "</span></button><br/></span>";
@@ -79,7 +79,7 @@ function generateDisplay() {
             out += "<br/>";
             break;
         }
-    }*/
+    }*/ 
     
     //Builds upgrades HTML
     for(var obj in game.upgrades) {
@@ -121,24 +121,24 @@ function write(id, value) {
 function display() {
 	//Display items
 	for(var obj in game.resources) {
-		write(fix(game.resources[obj].name), prettify(game.resources[obj].amount));
+            write(fix(game.resources[obj].name), prettify(game.resources[obj].amount));
         var res = game.resources[obj];
 	}
 	for(var obj in game.buildings) {
-        var build = game.buildings[obj]
-        if(build.unlocked) {
-            write(fix(game.buildings[obj].name) + "Amount", game.buildings[obj].amount);
-            var message = "";
-            for(var i=0; i<build.buyRes.length; i++) {
-                message += prettify(game.buildings[obj].cost[i]) + " " + game.buildings[obj].buyRes[i] + '<br/>';
+            var build = game.buildings[obj]
+            if(build.unlocked) {
+                write(fix(game.buildings[obj].name) + "Amount", game.buildings[obj].amount);
+                var message = "";
+                for(var i=0; i<build.buyRes.length; i++) {
+                    message += prettify(game.buildings[obj].cost[i]) + " " + game.resources[game.buildings[obj].buyRes[i]].name + '<br/>';
+                }
+                write((fix(game.buildings[obj].name)+"Cost"), message);
+                write(fix(build.name) + "Desc", build.desc);
+                document.getElementById(fix(build.name)).style.display = "inline";
             }
-            write((fix(game.buildings[obj].name)+"Cost"), message);
-            write(fix(build.name) + "Desc", build.desc);
-            document.getElementById(fix(build.name)).style.display = "inline";
-        }
-        else {
-            document.getElementById(fix(build.name)).style.display = "none";
-        }
+            else {
+                document.getElementById(fix(build.name)).style.display = "none";
+            }
 	}
 	for(var obj in game.upgrades) {
         if(game.upgrades[obj].purchased == true) {
@@ -156,7 +156,7 @@ function display() {
 }
 
 function prettify(input) {
-    var output = '';
+    var output = 0;
     output = input;
     
     //Secret change...
@@ -184,7 +184,7 @@ function prettify(input) {
      ******Billions******
      ********************
      */
-    if(input >= 100000000 && input < 100000000000) {
+    else if(input >= 100000000 && input < 100000000000) {
         output = (input/100000000);
         if(input%100000000 >= 1000)
             output = output.toFixed(3);
@@ -193,8 +193,10 @@ function prettify(input) {
         output = output.toString();
         output += 'B';
     }
-    
-	return output;
+    else {
+        output = Math.ceil(output);
+    }
+    return output;
 }
 
 function reset(skipConf) {
@@ -253,7 +255,7 @@ function buyBuild(building, amount) {
 }
 
 function buyUpg(name) {
-    /**
+    /*
      * Stores the upgrade information
      */
     var upg = game.upgrades[name];
@@ -261,16 +263,36 @@ function buyUpg(name) {
     if(game.resources[upg.buyRes].amount >= upg.cost) {
         game.resources[upg.buyRes].amount -= upg.cost;
         
-        /*//Boost buildings
-        if(upg.addGroup === "buildings") {
-            game.buildings[upg.addObject].perSec *= upg.boost;
+        if(upg.name.contains('Tier') && !upg.name.contains('Click')) {
+            build = game.buildings[upg.addObj];
+            build.addRes.push(fix(game.resources[upg.tier].name));
+            build.perSec.push(1);
+            //Reset the upgrade boosts
+            for(var i in build.perSec) {
+                build.perSec[i] = 1;
+            }
+            for(var obj in game.upgrades) {
+                upg2 = game.upgrades[obj];
+                if(upg2.name.contains('Boost')) {
+                    if(upg2.addObject = fix(build.name) && upg2.purchased) {
+                        for(var i in build.perSec) {
+                            build.perSec[i] *= upg2.boost;
+                        }
+                    }
+                }
+            }
         }
-        
-        //Boost click
-        if(upg.addGroup === "global") {
-            game.global[upg.addObject] *= upg.boost;
-        }*/
-        
+        if(upg.name.contains('Boost')) {
+            if(upg.addGroup == 'buildings') {
+                build = game.buildings[upg.addObject];
+                for(var i=0; i<build.perSec.length; i++) {
+                    build.perSec[i] *= upg.boost;
+                }
+            }
+            else {
+                game[upg.addGroup][upg.addObject] *= upg.boost;
+            }
+        }
         upg.purchased = true;
     }
     display();
@@ -293,11 +315,9 @@ function unlockUpg() {
                     upg.unlocked = true;
                 }
             }
-            else if(upg.addGroup === "global") {
-                if(upg.addObject === "perClick") {
-                    if(game.global.amtClicked >= upg.req)
-                        upg.unlocked = true;
-                }
+            else {
+                if(game.global[upg.reqRes] >= upg.req)
+                    upg.unlocked = true;
             }
             display();
         }
@@ -350,16 +370,33 @@ function genRandEvent() {
             while(true) {
                 var message = "<span id='" + (disp.children.length+1) + "'>";
                 if(game.buildings.mine.amount && (genRndNum(0, 100) >= 70)) {
+                    var res = game.resources.tinOre;
+                    var coal=false, copper=false, iron=false;
+                    for(var obj in game.upgrades) {
+                        upg = game.upgrades[obj]
+                        if(upg.name.contains('Mine Tier')) {
+                            if(upg.name === "Mine Tier I" && upg.purchased) {
+                                coal = true;
+                                continue;
+                            }
+                            if(upg.name === "Mine Tier II" && upg.purchased) {
+                                copper = true;
+                                continue;
+                            }
+                            if(upg.name === "Mine Tier III" && upg.purchased) {
+                                iron = true;
+                            }
+                        }
+                    }
+                    if(coal && genRndNum(0, 100) >= 80)
+                        res = game.resources.coal;
+                    else if(copper && genRndNum(0, 100) >= 80)
+                        res = game.resources.copperOre;
+                    else if(iron && genRndNum(0, 100) >= 80)
+                        res = game.resources.ironOre;
                     var incNum = genRndNum((100 + (2*(game.buildings.mine.amount))), (100 + (10*(game.buildings.mine.amount))));
-                    game.resources.ironOre.amount += incNum;
-                    message += game.chozoLore.mine.events[(genRndNum(0, game.chozoLore.mine.events.length))].format(incNum) + '<br/></span>';
-                    disp.innerHTML += message;
-                    break;
-                }
-                if(game.buildings.marketplace.amount && (genRndNum(0, 100) >= 65)) {
-                    var incNum = genRndNum((10 + (2*(game.buildings.marketplace.amount))), (10 + (10*(game.buildings.marketplace.amount))));
-                    game.resources.money.amount += incNum;
-                    message += game.chozoLore.marketplace.events[(genRndNum(0, game.chozoLore.marketplace.events.length))].format(incNum) + '<br/></span>';
+                    res.amount += incNum;
+                    message += game.chozoLore.mine.events[(genRndNum(0, game.chozoLore.mine.events.length))].format(incNum, res.name) + '<br/></span>';
                     disp.innerHTML += message;
                     break;
                 }
@@ -378,12 +415,6 @@ function genRandEvent() {
                 if(game.buildings.steelMill.amount && (genRndNum(0, 100) >= 50)) {
                     var incNum = genRndNum((100 + (2*(game.buildings.steelMill.amount))), (100 + (10*(game.buildings.steelMill.amount))));
                     message += game.chozoLore.steelMill.events[(genRndNum(0, game.chozoLore.steelMill.events.length))].format(incNum) + '<br/></span>';
-                    disp.innerHTML += message;
-                    break;
-                }
-                if(game.buildings.steelMarketplace.amount && (genRndNum(0, 100) >= 45)) {
-                    var incNum = genRndNum((50 + (2*(game.buildings.steelMarketplace.amount))), (50 + (10*(game.buildings.steelMarketplace.amount))));
-                    message += game.chozoLore.steelMarketplace.events[(genRndNum(0, game.chozoLore.steelMill.events.length))].format(incNum) + '<br/></span>';
                     disp.innerHTML += message;
                     break;
                 }
@@ -409,16 +440,39 @@ String.prototype.format = function () {
 };
 
 function click() {
-    game.global.amtClicked++;
-    var inc = 1;
-    for(var obj in game['upgrades']) {
-        if(game['upgrades'][obj].addObject === 'perClick')
-            if(game['upgrades'][obj].purchased)
-                inc *= game['upgrades'][obj].boost;
+    var mineCoal = false, mineCopper = false, mineIron = false;
+    addRes("tinOre", game.global.tinPerClick)
+    game.global.amtTinMined++;
+    game.global.amtMined++;
+    
+    for(var obj in game.upgrades) {
+        var upg = game.upgrades[obj];
+        if(upg.name.contains('Click') && upg.purchased) {
+            if(upg.name === "Click Tier I") {
+                mineCoal = true;
+            }
+            else if(upg.name === "Click Tier II") {
+                mineCopper = true;
+            }
+            else if(upg.name === "Click Tier III") {
+                mineIron = true;
+            }
+        }
     }
-    addRes('ironOre', game.global.perClick*inc);
-    if(genRndNum(0, 100) >= 90) {
-        addRes('coal', 1);
+    if(mineCoal && genRndNum(0, 100) >= 80) {
+        addRes('coal', game.global.coalPerClick);
+        game.global.amtCoalMined++;
+        game.amtMined++;
+    }
+    if(mineCopper && genRndNum(0, 100) >= 80) {
+        addRes('copperOre', game.global.copperPerClick);
+        game.global.amtCopperMined++;
+        game.global.amtMined++;
+    }
+    if(mineIron && genRndNum(0, 100) >= 80) {
+        addRes('ironOre', game.global.ironPerClick);
+        game.global.amtIronMined++;
+        game.global.amtMined++;
     }
 }
 
@@ -432,19 +486,9 @@ var incTime = window.setInterval(function(){
             var build = game.buildings[obj];
             var res = game.resources[build.addRes];
             //Used to determine the multiplier for upgrades
-            var upgInc = 1;
-            for(var a in game.upgrades) {
-                if(game.upgrades[a].addGroup === 'buildings') {
-                    if(game.upgrades[a].addObject === fix(build.name)) {
-                        if(game.upgrades[a].purchased == true)
-                            upgInc *= game.upgrades[a].boost;
-                    }
-                }
-            }
             if(build.useRes) {
                 for(var i=0; i<build.useRes.length; i++) {
                     if(game.resources[build.useRes[i]].amount < (build.useAmt[i]*build.amount)) {
-                        console.log('Hi!');
                         return;
                     }
                 }
@@ -452,15 +496,20 @@ var incTime = window.setInterval(function(){
                 for(var i=0; i<build.useRes.length; i++) {
                     game.resources[build.useRes[i]].amount -= (build.useAmt[i]*build.amount);
                 }
-                addRes(build.addRes, ((build.perSec*upgInc)*build.amount));
+                for(var i=0; i<build.addRes.length; i++) {
+                    addRes(build.addRes, build.perSec[i]*build.amount);
+                }
             }
             else {
-                addRes(build.addRes, ((build.perSec * upgInc) * build.amount));
+                for(var i=0; i<build.addRes.length; i++) {
+                    addRes(build.addRes[i], build.perSec[i]*build.amount);
+                }
             }
         }
     }
     display();
     genRandEvent();
+    game.global.timer++;
 }, 1000);
 
 //Unlocks various things when it is supposed to
@@ -502,7 +551,6 @@ function save() {
     }
     for(var obj in gameCp['upgrades']) {
         var a = gameCp['upgrades'][obj];
-        delete a.name;
         delete a.buyRes;
         delete a.cost;
         delete a.addGroup;
@@ -511,6 +559,10 @@ function save() {
         delete a.boost;
         delete a.desc;
         delete a.dispName;
+        if(a.name.contains('Tier')) {
+            delete a.reqRes;
+        }
+        delete a.name;
     }
     var saveStr = {};
     for(var a in gameCp) {
@@ -528,7 +580,7 @@ function save() {
 function load() {
     var saveStr = JSON.parse(localStorage.getItem('saveGame'));
     if(saveStr) {
-        if(saveStr.global.version === "0.0.1") {
+        if(saveStr.global.version === "0.0.1" || saveStr.global.version === "V0.1.0 ALPHA") {
             alert('Unfortunately, do to some updating, your save has to be wiped. Sorry. :(');
             reset(true);
             return;
