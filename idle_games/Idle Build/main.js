@@ -1,3 +1,18 @@
+/*
+  DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+                    Version 2, December 2004 
+
+ Copyright (C) 2015 Giles Johnson <poi543@gmail.com> 
+
+ Everyone is permitted to copy and distribute verbatim or modified 
+ copies of this license document, and changing it is allowed as long 
+ as the name is changed. 
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+ */
 write('versionDisplay', game.global.version);
 //For some effing reason this is the only fix
 document.getElementById('clickButton').onmousedown = function() { click(); };
@@ -108,13 +123,13 @@ function generateDisplay() {
 
 function write(id, value) {
     try {
-		document.getElementById(id).innerHTML = value;
+            document.getElementById(id).innerHTML = value;
 	}
 	catch(e) {
-		console.log("Problem displaying...");
-        console.log(id);
-		console.log(e);
-		console.log("If this problem persists, please contant the developer");
+            console.log("Problem displaying...");
+            console.log(id);
+            console.log(e);
+            console.log("If this problem persists, please contant the developer");
 	}
 }
 
@@ -246,9 +261,10 @@ function buyBuild(building, amount) {
     }
     
     build.amount += amount;
+    game.amtBuildPurchased++;
     
     for(var i=0; i<buyRes.length; i++) {
-        cost[i] += Math.ceil((build.amount * 1.17));
+        cost[i] += Math.ceil((build.amount * game.global.multiplier));
     }
     
     display();
@@ -294,6 +310,7 @@ function buyUpg(name) {
             }
         }
         upg.purchased = true;
+        game.global.numUpgPurchased++;
     }
     display();
 }
@@ -548,6 +565,9 @@ function save() {
         delete gameCp['buildings'][obj].perSec;
         delete gameCp['buildings'][obj].oCost;
         delete gameCp['buildings'][obj].desc;
+        delete gameCp['buildings'][obj].reqGroup;
+        delete gameCp['buildings'][obj].reqObject;
+        delete gameCp['buildings'][obj].reqAmt;
     }
     for(var obj in gameCp['upgrades']) {
         var a = gameCp['upgrades'][obj];
@@ -578,6 +598,7 @@ function save() {
 }
 
 function load() {
+    alert('Currently broken release. Please do not make any attempt to play.');
     var saveStr = JSON.parse(localStorage.getItem('saveGame'));
     if(saveStr) {
         if(saveStr.global.version === "0.0.1" || saveStr.global.version === "V0.1.0 ALPHA") {

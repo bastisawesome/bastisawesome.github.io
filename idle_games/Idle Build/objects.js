@@ -1,8 +1,24 @@
+/*
+ * Thanks to a few friends for helping me with the upgrades!
+  DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+                    Version 2, December 2004 
+
+ Copyright (C) 2015 Giles Johnson <poi543@gmail.com> 
+
+ Everyone is permitted to copy and distribute verbatim or modified 
+ copies of this license document, and changing it is allowed as long 
+ as the name is changed. 
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+ */
 function loadVars() {
     var toReturn = {
         global: {
             version: "V1.0.1 ALPHA",
-            multiplier: 1.17,
+            multiplier: 1.15,
             tinPerClick: 1,
             coalPerClick: 1,
             copperPerClick: 1,
@@ -12,7 +28,9 @@ function loadVars() {
             amtCopperMined: 0,
             amtIronMined: 0,
             timeSinceLastEvent: 0,
-            timer: 0
+            timer: 0,
+            numUpgPurchased: 0,
+            numBuildPurchased: 0
         },
         resources: {
             money: {
@@ -102,11 +120,11 @@ function loadVars() {
                 useRes: ["tinOre", "coal"],
                 useAmt: [1, 0.1],
                 perSec: [1],
-                oCost: [250],
-                cost: [250],
+                oCost: [100],
+                cost: [100],
                 reqGroup: 'resources',
                 reqObject: 'money',
-                reqAmt: 250,
+                reqAmt: 100,
                 unlocked: false,
                 desc: "Buy smelteries to process your tin ore into ingots."
             },
@@ -134,8 +152,8 @@ function loadVars() {
                 useRes: ["tin"],
                 useAmt: [10],
                 perSec: [1],
-                oCost: [100, 200],
-                cost: [100, 200],
+                oCost: [150, 200],
+                cost: [150, 200],
                 reqGroup: 'buildings',
                 reqObject: 'smeltery',
                 reqAmt: 5,
@@ -149,7 +167,7 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: "money",
-                cost: 100, //TODO: Change?
+                cost: 100,
                 addGroup: "buildings",
                 addObject: "mine",
                 req: 15,
@@ -162,10 +180,10 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: "money",
-                cost: 0,
+                cost: 150,
                 addGroup: "buildings",
                 addObject: "mine",
-                req: 45,
+                req: 30,
                 tier: "copper",
                 dispName: "Strip Mine",
                 desc: "This ingenious technique makes for a larger source of ores. (tier: copper)"
@@ -175,10 +193,10 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: "money",
-                cost: 0,
+                cost: 200,
                 addGroup: "buildings",
                 addObject: "mine",
-                req: 75,
+                req: 45,
                 tier: "iron",
                 dispName: "Better Mines",
                 desc: "Some mysterious blue substance has been found... I'm sure it's okay. (tier: iron)"
@@ -188,7 +206,7 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 160,
+                cost: 50,
                 addGroup: 'buildings',
                 addObject: 'mine',
                 req: 10,
@@ -201,10 +219,10 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 0,
+                cost: 100,
                 addGroup: 'buildings',
                 addObject: 'mine',
-                req: 50,
+                req: 25,
                 boost: 2,
                 dispName: '[RENAME]',
                 desc: "Mines are twice as efficient."
@@ -214,20 +232,72 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
+                cost: 200,
+                addGroup: 'buildings',
+                addObject: 'mine',
+                req: 50,
+                boost: 2,
+                dispName: 'Phazon Mines',
+                desc: "That mysterious blue material, now known as phazon, has somehow made your miners twice as efficient."
+            },
+            mineBoostIV: {
+                name: 'Mine Boost IV',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
+                cost: 350,
+                addGroup: 'buildings',
+                addObject: 'mine',
+                req: 75,
+                boost: 2,
+                dispName: 'Depper Mines',
+                desc: "Going even deeper into the earth to find more materials."
+            },
+            mineBoostV: {
+                name: 'Mine Boost V',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
                 cost: 500,
                 addGroup: 'buildings',
                 addObject: 'mine',
                 req: 100,
                 boost: 2,
-                dispName: 'Phazon Mines',
-                desc: "That mysterious blue material, now known as phazon, has somehow made your miners twice as efficient."
+                dispName: 'Better Training',
+                desc: "You put your miners through vigorous training to teach them a more efficient pickaxe wielding style."
+            },
+            mineBoostVI: {
+                name: 'Mine Boost VI',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
+                cost: 750,
+                addGroup: 'buildings',
+                addObject: 'mine',
+                req: 125,
+                boost: 2,
+                dispName: 'Drills',
+                desc: "Using drills your miners can collect ore easier."
+            },
+            mineBoostVII: {
+                name: 'Mine Boost VII',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
+                cost: 900,
+                addGroup: 'buildings',
+                addObject: 'mine',
+                req: 150,
+                boost: 2,
+                dispName: 'Hollow Shell',
+                desc: "The poor earth..."
             },
             hardwareStoreTierI: {
                 name: 'Hardware Store Tier I',
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 0,
+                cost: 100,
                 addGroup: 'buildings',
                 addObject: 'hardwareStore',
                 req: 15,
@@ -240,10 +310,10 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 500,
+                cost: 200,
                 addGroup: 'buildings',
                 addObject: 'hardwareStore',
-                req: 45,
+                req: 30,
                 tier: 'iron',
                 dispName: 'Iron Contract',
                 desc: "Your Iron is now being sold at your many retail locations. (tier: copper)"
@@ -253,10 +323,10 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 0,
+                cost: 300,
                 addGroup: 'buildings',
                 addObject: 'hardwareStore',
-                req: 75,
+                req: 45,
                 tier: 'steel',
                 dispName: 'Steel Contract',
                 desc: "For a large sum of money you are now allowed to sell steel! (tier: steel)"
@@ -266,39 +336,78 @@ function loadVars() {
                unlocked: false,
                purchased: false,
                buyRes: 'money',
-               cost: 200,
+               cost: 100,
                addGroup: 'buildings',
                addObject: 'hardwareStore',
                req: 10,
                boost: 2,
-               dispName: '[RENAME]',
-               desc: "Hardware stores are twice as efficient."
+               dispName: 'More Employees',
+               desc: "With more employees you can sell more, I guess."
             },
             hardwareStoreBoostII: {
                name: 'Hardware Store Boost II',
                unlocked: false,
                purchased: false,
                buyRes: 'money',
-               cost: 0,
+               cost: 150,
                addGroup: 'buildings',
                addObject: 'hardwareStore',
-               req: 50,
+               req: 25,
                boost: 2,
-               dispName: '[RENAME]',
-               desc: "Hardware stores are twice as efficient."
+               dispName: 'Cheaper Stock',
+               desc: "By lowering the price more people will buy your products"
             },
             hardwareStoreBoostIII: {
                name: 'Hardware Store Boost III',
                unlocked: false,
                purchased: false,
                buyRes: 'money',
-               cost: 1100,
+               cost: 200,
                addGroup: 'buildings',
                addObject: 'hardwareStore',
-               req: 100,
+               req: 50,
                boost: 2,
-               dispName: '[RENAME]',
-               desc: "Hardware stores are twice as efficient."
+               dispName: 'Increased Stock',
+               desc: "By increasing your supplies... Something."
+            },
+            hardwareStoreBoostIV: {
+                name: 'Hardware Store Boost IV',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
+                cost: 300,
+                addGroup: 'buildings',
+                addObject: 'hardwareStore',
+                req: 75,
+                boost: 2,
+                dispName: 'Commercials',
+                desc: "By running commercials you increase popularity on your supplies."
+            },
+            hardwareStoreBoostV: {
+                name: 'Hardware Store Boost V',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
+                cost: 400,
+                addGroup: 'buildings',
+                addObject: 'hardwareStore',
+                req: 100,
+                boost: 2,
+                dispName: 'Internation Business',
+                desc: "Going international! Best business decision ever! Now more countries can purchase your supplies!"
+            },
+            hardwareStoreBoostVI: {
+                name: 'Hardware Store Boost VI',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
+                cost: 500,
+                addGroup: 'buildings',
+                addObject: 'hardwareStore',
+                req: 125,
+                boost: 2,
+                dispName: 'Website',
+                desc: "With the commercial succces (get the pun?) you decide to go digital!"
             },
             smelteryTierI: {
                 name: "Smeltery Tier I",
@@ -321,7 +430,7 @@ function loadVars() {
                 cost: 0,
                 addGroup: "buildings",
                 addObject: "smeltery",
-                req: 45,
+                req: 30,
                 tier: "iron",
                 dispName: "New Fuel",
                 desc: "By engineering a new source of fuel your smelteries can process more materials! (tier: iron)"
@@ -331,39 +440,56 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 0,
+                cost: 150,
                 addGroup: 'buildings',
                 addObject: 'smeltery',
                 req: 10,
                 boost: 2,
-                dispName: '[RENAME]',
-                desc: "Smelteries are twice as efficient."
+                dispName: 'Hotter Forge',
+                desc: "By burning the coals hotter you can smelt more efficiently."
             },
             smelteryBoostII: {
                 name: 'Smeltery Boost II',
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 0,
+                cost: 200,
                 addGroup: 'buildings',
                 addObject: 'smeltery',
-                req: 50,
+                req: 25,
                 boost: 2,
-                dispName: '[RENAME]',
-                desc: "Smelteries are twice as efficient."
+                dispName: 'Floor Plan',
+                desc: "By expanding the smelteries you create more space for the equipment."
             },
             smelteryBoostIII: {
                 name: 'Smeltery Boost III',
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 0,
+                cost: 250,
                 addGroup: 'buildings',
                 addObject: 'smeltery',
-                req: 100,
+                req: 50,
                 boost: 2,
-                dispName: '[RENAME]',
-                desc: "Smelteries are twice as efficient."
+                dispName: 'Conveyer Belts',
+                desc: "By using this design in your smelteries your ingots can quickly be transported away."
+            },
+            smelteryBoostIV: {
+                name: 'Smeltery Boost IV',
+                unlocked: false,
+                purchased: false,
+                buyRes: 'money',
+                cost: 300,
+                addGroup: 'buildings',
+                addObject: 'smeltery',
+                req: 75,
+                boost: 2,
+                dispName: 'New Smelting Techniques',
+                desc: "With new smeling techniques you can smelt a lot more ore."
+            },
+            smelteryBoostV: {
+            },
+            smelteryBoostVI: {
             },
             steelMillBoostI: {
                 name: "Steel Mill Boost I",
@@ -386,7 +512,7 @@ function loadVars() {
                 cost: 1000,
                 addGroup: "buildings",
                 addObject: "steelMill",
-                req: 50,
+                req: 25,
                 boost: 2,
                 dispName: "More Steel",
                 desc: "It is well known that by having more steel you do, in fact, have more steel."
@@ -399,11 +525,17 @@ function loadVars() {
                 cost: 0,
                 addGroup: "buildings",
                 addObject: "steelMill",
-                req: 100,
+                req: 50,
                 boost: 2,
                 dispName: "Even More Steel",
                 desc: "No, I did not run out of ideas when I was making this... *quickly runs away*"
+            },/*
+            steelMillBoostIV: {
             },
+            steelMillBoostV: {
+            },
+            steelMillBoostVI: {
+            },*/
             clickTierI: {
                 name: "Click Tier I",
                 unlocked: false,
@@ -431,9 +563,9 @@ function loadVars() {
                 unlocked: false,
                 purchased: false,
                 buyRes: "money",
-                cost: 60, //TODO: Change?
+                cost: 60,
                 reqRes: "amtCopperMined",
-                req: 100,
+                req: 25,
                 dispName: "Copper pickaxe",
                 desc: "With iron you can do a lot more. (tier: iron)"
             },
@@ -450,13 +582,23 @@ function loadVars() {
                 boost: 2,
                 dispName: '[RENAME]',
                 desc: "You mine tin faster?"
+            },/*
+            tinBoostII: {
             },
+            tinBoostIII: {
+            },
+            tinBoostIV: {
+            },
+            tinBoostV: {
+            },
+            tinBoostVI: {
+            },*/
             coalBoostI: {
                 name: 'Coal Boost I',
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 250, //TODO: Change?
+                cost: 250,
                 addGroup: 'global',
                 addObject: 'coalPerClick',
                 reqRes: 'amtCoalMined',
@@ -464,13 +606,23 @@ function loadVars() {
                 boost: 2,
                 dispName: '[RENAME]',
                 desc: "You mine coal faster?"
+            },/*
+            coalBoostII: {
             },
+            coalBoostIII: {
+            },
+            coalBoostIV: {
+            },
+            coalBoostV: {
+            },
+            coalBoostVI: {
+            },*/
             copperBoostI: {
                 name: 'Copper Boost I',
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 125, //TODO: Change?
+                cost: 125,
                 addGroup: 'global',
                 addObject: 'copperPerClick',
                 reqRes: 'amtCopperMined',
@@ -478,13 +630,23 @@ function loadVars() {
                 boost: 2,
                 dispName: '[RENAME]',
                 desc: "You mine copper faster?"
+            },/*
+            copperBoostII: {
             },
+            copperBoostIII: {
+            },
+            copperBoostIV: {
+            },
+            copperBoostV: {
+            },
+            copperBoostVI: {
+            },*/
             ironBoostI: {
                 name: 'Iron Boost I',
                 unlocked: false,
                 purchased: false,
                 buyRes: 'money',
-                cost: 200, //TODO: Change?
+                cost: 200,
                 addGroup: 'global',
                 addObject: 'ironPerClick',
                 reqRes: 'amtIronMined',
@@ -492,10 +654,19 @@ function loadVars() {
                 boost: 2,
                 dispName: '[RENAME]',
                 desc: "You mine iron faster?"
-            }
+            },/*
+            ironBoostII: {
+            },
+            ironBoostIII: {
+            },
+            ironBoostIV: {
+            },
+            ironBoostV: {
+            },
+            ironBoostVI: {
+            }*/
         },
         logBook: {
-            //TODO Work on achievements
             /*
              * corporateScumbag {
              *  name: 'Corporate Scumbag',
@@ -508,7 +679,7 @@ function loadVars() {
                 events: [
                     "Your miners have kindly donated {} {} ore they have mined.",
                     "A miner stumbled upon a large vein of iron ore. You gain {} {}ore.",
-                    "The mining business is booming! Your miners manage to stockpile an extra {} {} ore.",
+                    "The mining business is booming! Your miners manage to stockpile an extra {} {}.",
                     "A sudden influx of miners has increased your stores with {} {} ore.",
                 ]
             },
