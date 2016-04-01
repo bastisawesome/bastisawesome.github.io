@@ -1,4 +1,5 @@
 // Holds all of the colours used
 // Uses RGB codes
-
-SKYBLUE = "rgb(164, 211, 238)";
+Colours = {
+    SKYBLUE: "rgb(164, 211, 238)"
+}

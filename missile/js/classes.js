@@ -44,7 +44,7 @@ Boss = function() {
  */
 Cloud = function() {
     this.image = new Image();
-    this.image.src = 'img/cloud.png';
+    this.image.src = 'img/cloud' + Math.floor((Math.random()*8)+1) +'.png';
     this.x = gameCanvas.width;
     this.y = Math.random() * gameCanvas.height;
     this.x_offset = this.image.width;

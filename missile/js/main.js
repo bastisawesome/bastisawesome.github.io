@@ -76,26 +76,13 @@ function update() {
     if(!missileGroup[0]) {
         addMissile();
     }
-    if(Math.random() < 1/40) {
-        addMissile();
-        if(Math.random() < 1/50) {
+    var loops=1;
+    while(true) {
+        if(Math.random() < 1/(20 + (10*loops))) {
             addMissile();
-            if(Math.random() < 1/60) {
-                addMissile();
-                if(Math.random() < 1/70) {
-                    addMissile();
-                    if(Math.random() < 1/80) {
-                        addMissile();
-                        if(Math.random() < 1/90) {
-                            addMissile();
-                            if(Math.random() < 1/100) {
-                                addMissile();
-                            }
-                        }
-                    }
-                }
-            }
+            loops++;
         }
+        else break;
     }
     for(var i in missileGroup) {
         if(missileGroup.hasOwnProperty(i)) {
@@ -114,7 +101,7 @@ function render() {
     // Fill the background layer 4
     canvasContext.beginPath();          // Allows filling
     canvasContext.rect(0, 0, gameCanvas.width, gameCanvas.height);
-    canvasContext.fillStyle = SKYBLUE;   // Sets the colour
+    canvasContext.fillStyle = Colours.SKYBLUE;   // Sets the colour
     canvasContext.fill();               // Fills the canvas
     
     // Generate clouds as background layer 3
