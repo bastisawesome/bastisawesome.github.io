@@ -2,16 +2,20 @@ window.onload = loadGame; // Loads the game.
 
 var gameCanvas;                 // Stores the game canvas for easy managament
 var canvasContext;              // Stores the canvas context for easy managament
-var missileGroup= [];            // Holds all enemy sprites
+var missileGroup= [];          	// Holds all enemy sprites
 var cloudGroup = [];            // Holds all of the cloud sprites
 var loop;                       // Loops the game; stored here to allow for modification
-var delta, now, then=0;           // Holds the change in FPS
+var delta, now, then=0;         // Holds the change in FPS
+var player;			// Controls the player character
+var pressedKeys = [];		// Handles user input
 /**
  * Sets all of the variables and prepares the game to run.
  */
 function loadGame() {
     gameCanvas = document.getElementById('gameCanvas');
     canvasContext = gameCanvas.getContext('2d');
+    
+    player = new Player();
     
     frame();
 }
@@ -21,6 +25,7 @@ function loadGame() {
  */
 function frame() {
     genDelta();
+    input();
     update();
     render();
     loop = requestAnimationFrame(frame);
@@ -122,7 +127,7 @@ function render() {
     //TODO Finish this code
     
     // Generate player as background layer 1
-    //TODO Finish this code
+    canvasContext.drawImage(player.image, player.x, player.y);
 }
 
 /*
@@ -137,4 +142,34 @@ function addMissile() {
  */
 function addCloud() {
     cloudGroup.push(new Cloud());
+}
+
+/*
+ * Handles user input
+ */
+document.addEventListener('keydown', function(event) {
+    if(pressedKeys.indexOf(event.keyCode) == -1)
+	pressedKeys.push(event.keyCode);
+});
+document.addEventListener('keyup', function(event) {
+    while(pressedKeys.indexOf(event.keyCode) >-1)
+	pressedKeys.splice(pressedKeys.indexOf(event.keyCode), 1);
+});
+function input() {
+    for(var i in pressedKeys) {
+	switch(pressedKeys[i]) {
+	    case KEYS.UP:
+		player.y -= player.speed;
+		break;
+	    case KEYS.DOWN:
+		player.y += player.speed;
+		break;
+	    case KEYS.LEFT:
+		player.x -= player.speed;
+		break;
+	    case KEYS.RIGHT:
+		player.x += player.speed;
+		break;
+	}
+    }
 }

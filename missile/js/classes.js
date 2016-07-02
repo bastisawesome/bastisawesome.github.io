@@ -5,8 +5,11 @@ Player = function() {
     this.image = new Image();
     this.image.src = 'img/jet.png';
     this.x = 0;
-    this.y = 0;
+    this.y = gameCanvas.height/2;
+    this.x_offset = this.image.width;
+    this.y_offset = this.image.height;
     this.lives = 3;
+    this.speed = 5;
     
     this.onLoop = function() {
     }
