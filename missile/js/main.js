@@ -160,15 +160,23 @@ function input() {
 	switch(pressedKeys[i]) {
 	    case KEYS.UP:
 		player.y -= player.speed;
+		if(player.y < 0)
+		    player.y = 0;
 		break;
 	    case KEYS.DOWN:
 		player.y += player.speed;
+		if(player.y+player.y_offset > gameCanvas.height)
+		    player.y = gameCanvas.height-player.y_offset;
 		break;
 	    case KEYS.LEFT:
 		player.x -= player.speed;
+		if(player.x < 0)
+		    player.x = 0;
 		break;
 	    case KEYS.RIGHT:
 		player.x += player.speed;
+		if(player.x+player.x_offset > gameCanvas.width)
+		    player.x = gameCanvas.width-player.x_offset;
 		break;
 	}
     }
