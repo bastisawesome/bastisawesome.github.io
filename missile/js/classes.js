@@ -8,8 +8,6 @@ Player = function() {
     this.y = gameCanvas.height/2;
     this.x_offset = 62;
     this.y_offset = 25;
-    console.log(this.x_offset + ": x_offset");
-    console.log(this.y_offset + ": y_offset");
     this.lives = 3;
     this.speed = 5;
     
