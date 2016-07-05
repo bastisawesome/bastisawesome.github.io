@@ -44,6 +44,8 @@ function genDelta() {
  * Handles the looping functions of the game.
  */
 function update() {
+    // Handle collisions
+    
     if(!cloudGroup[0]) {
         addCloud();
     }
