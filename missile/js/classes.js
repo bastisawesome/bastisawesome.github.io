@@ -6,8 +6,8 @@ Player = function() {
     this.image.src = 'img/jet.png';
     this.x = 0;
     this.y = gameCanvas.height/2;
-    this.x_offset = 62;
-    this.y_offset = 25;
+    this.width = 62;
+    this.height = 25;
     this.lives = 3;
     this.speed = 5;
     
@@ -22,8 +22,9 @@ Missile = function() {
     this.image = new Image();
     this.image.src = 'img/missile.png';
     this.x = gameCanvas.width;
-    this.x_offset = this.image.width;
     this.y = Math.random()*gameCanvas.height;
+    this.width = this.image.width;
+    this.height = this.image.height;
     this.speed = (Math.random()*60) + 50;
     
     this.onLoop = function(delta) {
@@ -50,7 +51,6 @@ Cloud = function() {
     this.image.src = 'img/cloud' + Math.floor((Math.random()*8)+1) +'.png';
     this.x = gameCanvas.width;
     this.y = Math.random() * gameCanvas.height;
-    this.x_offset = this.image.width;
     
     this.onLoop = function(delta) {
         this.x -= 50 * delta;

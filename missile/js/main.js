@@ -45,6 +45,7 @@ function genDelta() {
  */
 function update() {
     // Handle collisions
+    colCheck();
     
     if(!cloudGroup[0]) {
         addCloud();
@@ -167,8 +168,8 @@ function input() {
 		break;
 	    case KEYS.DOWN:
 		player.y += player.speed;
-		if(player.y+player.y_offset > gameCanvas.height)
-		    player.y = gameCanvas.height-player.y_offset;
+		if(player.y+player.height > gameCanvas.height)
+		    player.y = gameCanvas.height-player.height;
 		break;
 	    case KEYS.LEFT:
 		player.x -= player.speed;
@@ -177,9 +178,30 @@ function input() {
 		break;
 	    case KEYS.RIGHT:
 		player.x += player.speed;
-		if(player.x+player.x_offset > gameCanvas.width)
-		    player.x = gameCanvas.width-player.x_offset;
+		if(player.x+player.width > gameCanvas.width)
+		    player.x = gameCanvas.width-player.width;
 		break;
 	}
     }
+}
+
+/*
+ * Handles collision detection
+ */
+function colCheck() {
+    for(var i in missileGroup) {
+	if(collides(missileGroup[i], player)) {
+	    missileGroup.splice(i, 1);
+	}
+    }
+}
+
+/*
+ * Check if objects collide
+ */
+function collides(a, b) {
+  return a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y;
 }
