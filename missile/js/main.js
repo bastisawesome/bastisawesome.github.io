@@ -8,6 +8,7 @@ var loop;                       // Loops the game; stored here to allow for modi
 var delta, now, then=0;         // Holds the change in FPS
 var player;			// Controls the player character
 var pressedKeys = [];		// Handles user input
+var paused = true;		// Pauses the game
 /**
  * Sets all of the variables and prepares the game to run.
  */
@@ -24,11 +25,13 @@ function loadGame() {
  * Handles the game loop.
  */
 function frame() {
-    genDelta();
-    input();
-    update();
-    render();
-    loop = requestAnimationFrame(frame);
+    if(!paused) {
+	genDelta();
+	input();
+	update();
+	render();
+	loop = requestAnimationFrame(frame);
+    }
 }
 
 /*
@@ -204,4 +207,29 @@ function collides(a, b) {
     a.x + a.width > b.x &&
     a.y < b.y + b.height &&
     a.y + a.height > b.y;
+}
+
+/*
+ * Pauses the game
+ */
+function pause() {
+    if(paused) {
+	paused = false;
+	frame();
+    }
+    else {
+	paused = true;
+    }
+}
+
+/*
+ * Checks if the tab is focused
+ */
+window.onblur = function() {
+    console.log("Pausing...");
+    pause();
+}
+window.onfocus = function() {
+    console.log("Unpausing...");
+    pause();
 }
