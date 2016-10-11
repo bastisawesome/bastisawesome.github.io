@@ -486,7 +486,7 @@ function loadVars() {
                 boost: 2,
                 dispName: 'New Smelting Techniques',
                 desc: "With new smeling techniques you can smelt a lot more ore."
-            },
+            },/*
             smelteryBoostV: {
             },
             smelteryBoostVI: {
@@ -503,7 +503,7 @@ function loadVars() {
                 boost: 2,
                 dispName: "More Coal",
                 desc: "With more coal you can use more coal causing more coal to be used. No, that was not a useful statement."
-            },
+            },*/
             steelMillBoostII: {
                 name: "Steel Mill Boost II",
                 unlocked: false,

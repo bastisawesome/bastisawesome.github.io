@@ -95,7 +95,7 @@ function generateDisplay() {
             break;
         }
     }*/ 
-    
+
     //Builds upgrades HTML
     for(var obj in game.upgrades) {
         var upg = game.upgrades[obj];
@@ -126,10 +126,10 @@ function write(id, value) {
             document.getElementById(id).innerHTML = value;
 	}
 	catch(e) {
-            console.log("Problem displaying...");
-            console.log(id);
-            console.log(e);
-            console.log("If this problem persists, please contant the developer");
+            alert("Problem displaying... " + id + " " + e + "! If this problem persists, please contact the developer.");
+            window.clearInterval(incTime);
+	    window.clearInterval(saveTime);
+	    window.clearInterval(unlTime);
 	}
 }
 
@@ -279,7 +279,7 @@ function buyUpg(name) {
     if(game.resources[upg.buyRes].amount >= upg.cost) {
         game.resources[upg.buyRes].amount -= upg.cost;
         
-        if(upg.name.contains('Tier') && !upg.name.contains('Click')) {
+        if(upg.name.indexOf('Tier') != -1 && upg.name.indexOf('Click') == -1) {
             build = game.buildings[upg.addObj];
             build.addRes.push(fix(game.resources[upg.tier].name));
             build.perSec.push(1);
@@ -289,7 +289,7 @@ function buyUpg(name) {
             }
             for(var obj in game.upgrades) {
                 upg2 = game.upgrades[obj];
-                if(upg2.name.contains('Boost')) {
+                if(upg2.name.indexOf('Boost') != -1) {
                     if(upg2.addObject = fix(build.name) && upg2.purchased) {
                         for(var i in build.perSec) {
                             build.perSec[i] *= upg2.boost;
@@ -298,7 +298,7 @@ function buyUpg(name) {
                 }
             }
         }
-        if(upg.name.contains('Boost')) {
+        if(upg.name.indexOf('Boost') != -1) {
             if(upg.addGroup == 'buildings') {
                 build = game.buildings[upg.addObject];
                 for(var i=0; i<build.perSec.length; i++) {
@@ -391,7 +391,7 @@ function genRandEvent() {
                     var coal=false, copper=false, iron=false;
                     for(var obj in game.upgrades) {
                         upg = game.upgrades[obj]
-                        if(upg.name.contains('Mine Tier')) {
+                        if(upg.name.indexOf('Mine Tier') != -1) {
                             if(upg.name === "Mine Tier I" && upg.purchased) {
                                 coal = true;
                                 continue;
@@ -464,7 +464,7 @@ function click() {
     
     for(var obj in game.upgrades) {
         var upg = game.upgrades[obj];
-        if(upg.name.contains('Click') && upg.purchased) {
+        if(upg.name.indexOf('Click') != -1 && upg.purchased) {
             if(upg.name === "Click Tier I") {
                 mineCoal = true;
             }
@@ -579,7 +579,7 @@ function save() {
         delete a.boost;
         delete a.desc;
         delete a.dispName;
-        if(a.name.contains('Tier')) {
+        if(a.name.indexOf('Tier') != -1) {
             delete a.reqRes;
         }
         delete a.name;
@@ -598,7 +598,6 @@ function save() {
 }
 
 function load() {
-    alert('Currently broken release. Please do not make any attempt to play.');
     var saveStr = JSON.parse(localStorage.getItem('saveGame'));
     if(saveStr) {
         if(saveStr.global.version === "0.0.1" || saveStr.global.version === "V0.1.0 ALPHA") {
