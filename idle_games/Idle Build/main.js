@@ -279,7 +279,7 @@ function buyUpg(name) {
     if(game.resources[upg.buyRes].amount >= upg.cost) {
         game.resources[upg.buyRes].amount -= upg.cost;
         
-        if(upg.name.indexOf('Tier') != -1 && upg.name.indexOf('Click') == -1) {
+        if(upg.name.contains('Tier') && !upg.name.contains('Click')) {
             build = game.buildings[upg.addObj];
             build.addRes.push(fix(game.resources[upg.tier].name));
             build.perSec.push(1);
@@ -289,7 +289,7 @@ function buyUpg(name) {
             }
             for(var obj in game.upgrades) {
                 upg2 = game.upgrades[obj];
-                if(upg2.name.indexOf('Boost') != -1) {
+                if(upg2.name.contains('Boost')) {
                     if(upg2.addObject = fix(build.name) && upg2.purchased) {
                         for(var i in build.perSec) {
                             build.perSec[i] *= upg2.boost;
@@ -298,7 +298,7 @@ function buyUpg(name) {
                 }
             }
         }
-        if(upg.name.indexOf('Boost') != -1) {
+        if(upg.name.contains('Boost')) {
             if(upg.addGroup == 'buildings') {
                 build = game.buildings[upg.addObject];
                 for(var i=0; i<build.perSec.length; i++) {
@@ -391,7 +391,7 @@ function genRandEvent() {
                     var coal=false, copper=false, iron=false;
                     for(var obj in game.upgrades) {
                         upg = game.upgrades[obj]
-                        if(upg.name.indexOf('Mine Tier') != -1) {
+                        if(upg.name.contains('Mine Tier')) {
                             if(upg.name === "Mine Tier I" && upg.purchased) {
                                 coal = true;
                                 continue;
@@ -464,7 +464,7 @@ function click() {
     
     for(var obj in game.upgrades) {
         var upg = game.upgrades[obj];
-        if(upg.name.indexOf('Click') != -1 && upg.purchased) {
+        if(upg.name.contains('Click') && upg.purchased) {
             if(upg.name === "Click Tier I") {
                 mineCoal = true;
             }
@@ -579,7 +579,7 @@ function save() {
         delete a.boost;
         delete a.desc;
         delete a.dispName;
-        if(a.name.indexOf('Tier') != -1) {
+        if(a.name.contains('Tier')) {
             delete a.reqRes;
         }
         delete a.name;
@@ -624,6 +624,8 @@ function load() {
 var saveTime = window.setInterval(function() {
     save();
 }, 60000);
+
+String.prototype.contains = function(it) { return this.indexOf(it) != -1; }; // Implements a contains function to strings
 
 //Last line of code:
 load();
