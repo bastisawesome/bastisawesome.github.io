@@ -65,12 +65,12 @@ function generateDisplay() {
                    + game.resources[obj].value*game.resources[obj].sellAmt + " money</button>";
 	    
 	}
-	if(game.resources[obj].amount >= game.resources[obj].sellAmt*10) {
+	/*if(game.resources[obj].amount >= game.resources[obj].sellAmt*10) {
 		out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
 		    + ", " + game.resources[obj].sellAmt*10 + ")'>Sell " + game.resources[obj].sellAmt*10 + ' '
 		    + game.resources[obj].name + "<br/>For "
 		    + game.resources[obj].value*game.resources[obj].sellAmt*10 + " money</button>";
-	}
+	}*/
         
         out += "<br/>";
     }
@@ -143,6 +143,7 @@ function display() {
             write(fix(game.resources[obj].name), prettify(game.resources[obj].amount));
         var res = game.resources[obj];
 	}
+	
 	for(var obj in game.buildings) {
             var build = game.buildings[obj]
             if(build.unlocked) {
@@ -180,7 +181,7 @@ function prettify(input) {
     
     //Secret change...
     if (output == 666) {
-        output = "DEVIL!"; //This only changes the number displayed, the actual value remains the same. I'm too lazy to fix that.
+        output++; //This only changes the number displayed, the actual value remains the same. I'm too lazy to fix that.
     }
     
     /*
@@ -284,7 +285,7 @@ function buyUpg(name) {
         game.resources[upg.buyRes].amount -= upg.cost;
         
         if(upg.name.contains('Tier') && !upg.name.contains('Click')) {
-            build = game.buildings[upg.addObj];
+            build = game.buildings[upg.addObject];
             build.addRes.push(fix(game.resources[upg.tier].name));
             build.perSec.push(1);
             //Reset the upgrade boosts
