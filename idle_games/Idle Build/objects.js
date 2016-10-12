@@ -677,10 +677,10 @@ function loadVars() {
             /*TODO Add events on unlocks*/
             mine: {
                 events: [
-                    "Your miners have kindly donated {} {} ore they have mined.",
-                    "A miner stumbled upon a large vein of iron ore. You gain {} {}ore.",
+                    "Your miners have kindly donated {} {} they have mined.",
+                    "A miner stumbled upon a large vein of iron ore. You gain {} {}.",
                     "The mining business is booming! Your miners manage to stockpile an extra {} {}.",
-                    "A sudden influx of miners has increased your stores with {} {} ore.",
+                    "A sudden influx of miners has increased your stores with {} {}.",
                 ]
             },
             marketplace: {

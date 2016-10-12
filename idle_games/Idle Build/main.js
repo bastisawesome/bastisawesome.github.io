@@ -56,6 +56,7 @@ function generateDisplay() {
     
     out += "<br/>";
     
+    // Generates the sell buttons
     for(var obj in game.resources) {
         if(game.resources[obj].sellable == true) {
             out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
@@ -64,6 +65,7 @@ function generateDisplay() {
                    + game.resources[obj].value*game.resources[obj].sellAmt + " money</button><br/>";
         }
     }
+    
     out += "<br/>";
     
     //Builds the buildings HTML
@@ -88,13 +90,6 @@ function generateDisplay() {
         out += "</span>";
         out += "<span id='" + fix(build.name) + "Desc'>" + build.desc + "</span></button><br/></span>";
     }
-    
-    /*for(var i in game.buildings) {
-        if(game.buildings[i].unlocked) {
-            out += "<br/>";
-            break;
-        }
-    }*/ 
 
     //Builds upgrades HTML
     for(var obj in game.upgrades) {
@@ -176,7 +171,7 @@ function prettify(input) {
     
     //Secret change...
     if (output == 666) {
-        output++; //This only changes the number displayed, the actual value remains the same. I'm too lazy to fix that.
+        output = "DEVIL!"; //This only changes the number displayed, the actual value remains the same. I'm too lazy to fix that.
     }
     
     /*
