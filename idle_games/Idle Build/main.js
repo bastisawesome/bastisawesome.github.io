@@ -62,8 +62,17 @@ function generateDisplay() {
             out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
                    + ", " + game.resources[obj].sellAmt + ")'>Sell " + game.resources[obj].sellAmt + ' '
                    + game.resources[obj].name + "<br/>For " 
-                   + game.resources[obj].value*game.resources[obj].sellAmt + " money</button><br/>";
-        }
+                   + game.resources[obj].value*game.resources[obj].sellAmt + " money</button>";
+	    
+	}
+	if(game.resources[obj].amount >= game.resources[obj].sellAmt*10) {
+		out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
+		    + ", " + game.resources[obj].sellAmt*10 + ")'>Sell " + game.resources[obj].sellAmt*10 + ' '
+		    + game.resources[obj].name + "<br/>For "
+		    + game.resources[obj].value*game.resources[obj].sellAmt*10 + " money</button>";
+	}
+        
+        out += "<br/>";
     }
     
     out += "<br/>";
