@@ -58,24 +58,24 @@ function generateDisplay() {
     
     // Generates the sell buttons
     for(var obj in game.resources) {
-        if(game.resources[obj].sellable == true) {
-            out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
-                   + ", " + game.resources[obj].sellAmt + ")'>Sell " + game.resources[obj].sellAmt + ' '
-                   + game.resources[obj].name + "<br/>For " 
-                   + game.resources[obj].value*game.resources[obj].sellAmt + " money</button>";
+	var res = game.resources[obj];
+        if(res.sellable) {
+	    // Generate sell buttons
+            out += "<button onClick='sellRes(" + JSON.stringify(fix(res.name))
+                   + ", " + res.sellAmt + ")'>Sell " + res.sellAmt + ' '
+                   + res.name + "<br/>For " 
+                   + res.value*res.sellAmt + " money</button>";
 	    
+	    // Generate multi-sell buttons
+	    out += "<span id='" + fix(res.name) + "SellX10' style='display:none'>"
+		+ "<button onClick='sellRes(" + JSON.stringify(fix(res.name))
+		+ ", " + (res.sellAmt*10) + ")'>Sell " + res.sellAmt*10 + ' '
+		+ res.name + "<br/>For "
+		+ res.value*(res.sellAmt*10) + " money</button></span>";
 	}
-	/*if(game.resources[obj].amount >= game.resources[obj].sellAmt*10) {
-		out += "<button onClick='sellRes(" + JSON.stringify(fix(game.resources[obj].name))
-		    + ", " + game.resources[obj].sellAmt*10 + ")'>Sell " + game.resources[obj].sellAmt*10 + ' '
-		    + game.resources[obj].name + "<br/>For "
-		    + game.resources[obj].value*game.resources[obj].sellAmt*10 + " money</button>";
-	}*/
         
         out += "<br/>";
     }
-    
-    out += "<br/>";
     
     //Builds the buildings HTML
     for(var obj in game.buildings) {
@@ -123,6 +123,7 @@ function generateDisplay() {
     
     //Display
     write("tempName", out);
+    display(); // Updates the display
 }
 
 function write(id, value) {
@@ -140,8 +141,14 @@ function write(id, value) {
 function display() {
 	//Display items
 	for(var obj in game.resources) {
-            write(fix(game.resources[obj].name), prettify(game.resources[obj].amount));
-        var res = game.resources[obj];
+	    var res = game.resources[obj];
+            write(fix(res.name), prettify(res.amount));
+	    if(res.sellable) {
+		if(res.amount >= (res.sellAmt*10))
+		    document.getElementById(fix(res.name) + "SellX10").style.display = 'inline';
+		else
+		    document.getElementById(fix(res.name) + "SellX10").style.display = 'none';
+	    }
 	}
 	
 	for(var obj in game.buildings) {
