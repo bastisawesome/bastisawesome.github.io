@@ -162,7 +162,7 @@ function loadVars() {
             }
         },
         upgrades: {
-            mineTierI: {
+            /*mineTierI: {
                 name: "Mine Tier I",
                 unlocked: false,
                 purchased: false,
@@ -200,7 +200,7 @@ function loadVars() {
                 tier: "iron",
                 dispName: "Better Mines",
                 desc: "Some mysterious blue substance has been found... I'm sure it's okay. (tier: iron)"
-            },
+            },*/
             mineBoostI: {
                 name: 'Mine Boost I',
                 unlocked: false,
@@ -292,7 +292,7 @@ function loadVars() {
                 dispName: 'Hollow Shell',
                 desc: "The poor earth..."
             },
-            hardwareStoreTierI: {
+            /*hardwareStoreTierI: {
                 name: 'Hardware Store Tier I',
                 unlocked: false,
                 purchased: false,
@@ -330,7 +330,7 @@ function loadVars() {
                 tier: 'steel',
                 dispName: 'Steel Contract',
                 desc: "For a large sum of money you are now allowed to sell steel! (tier: steel)"
-            },
+            },*/
             hardwareStoreBoostI: {
                name: 'Hardware Store Boost I',
                unlocked: false,
@@ -409,7 +409,7 @@ function loadVars() {
                 dispName: 'Website',
                 desc: "With the commercial succces (get the pun?) you decide to go digital!"
             },
-            smelteryTierI: {
+            /*smelteryTierI: {
                 name: "Smeltery Tier I",
                 unlocked: false,
                 purchased: false,
@@ -434,7 +434,7 @@ function loadVars() {
                 tier: "iron",
                 dispName: "New Fuel",
                 desc: "By engineering a new source of fuel your smelteries can process more materials! (tier: iron)"
-            },
+            },*/
             smelteryBoostI: {
                 name: 'Smeltery Boost I',
                 unlocked: false,
