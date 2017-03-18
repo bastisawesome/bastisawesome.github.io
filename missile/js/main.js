@@ -225,4 +225,4 @@ window.onfocus = function() {
 window.addEventListener("load", function() {
     paused = false;
     loadGame();
-}
+})
