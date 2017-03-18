@@ -24,11 +24,11 @@ function loadGame() {
  */
 function frame() {
     if(!paused) {
-	genDelta();
-	input();
-	update();
-	render();
-	loop = requestAnimationFrame(frame);
+        genDelta();
+        input();
+        update();
+        render();
+        loop = requestAnimationFrame(frame);
     }
 }
 
@@ -207,16 +207,21 @@ function collides(a, b) {
     a.y + a.height > b.y;
 }
 
+function pause(p) {
+    paused = p;
+    frame();
+}
+
 /*
  * Checks if the tab is focused
  */
 window.onblur = function() {
     console.log("Pausing...");
-    paused = true;
+    pause(true);
 }
 window.onfocus = function() {
     console.log("Unpausing...");
-    paused = false;
+    pause(false);
 }
 
 /*
