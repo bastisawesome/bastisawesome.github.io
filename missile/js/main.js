@@ -1,5 +1,3 @@
-window.onload = loadGame; // Loads the game.
-
 var gameCanvas;                 // Stores the game canvas for easy managament
 var canvasContext;              // Stores the canvas context for easy managament
 var missileGroup= [];          	// Holds all enemy sprites
@@ -210,26 +208,21 @@ function collides(a, b) {
 }
 
 /*
- * Pauses the game
- */
-function pause() {
-    if(paused) {
-	paused = false;
-	frame();
-    }
-    else {
-	paused = true;
-    }
-}
-
-/*
  * Checks if the tab is focused
  */
 window.onblur = function() {
     console.log("Pausing...");
-    pause();
+    paused = true;
 }
 window.onfocus = function() {
     console.log("Unpausing...");
-    pause();
+    paused = false;
+}
+
+/*
+ * Load the game
+ */
+window.addEventListener("load", function() {
+    paused = false;
+    loadGame();
 }
