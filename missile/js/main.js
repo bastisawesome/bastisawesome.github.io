@@ -4,9 +4,12 @@ var missileGroup= [];          	// Holds all enemy sprites
 var cloudGroup = [];            // Holds all of the cloud sprites
 var loop;                       // Loops the game; stored here to allow for modification
 var delta, now, then=0;         // Holds the change in FPS
-var player;			// Controls the player character
-var pressedKeys = [];		// Handles user input
-var paused = true;		// Pauses the game
+var player;			            // Controls the player character
+var pressedKeys = [];		    // Handles user input
+var paused = true;		        // Pauses the game
+var distance = 0;               // Keeps track of the distance the player has moved
+var updLoops = 0;               // Number of times the update function has looped
+
 /**
  * Sets all of the variables and prepares the game to run.
  */
@@ -24,12 +27,12 @@ function loadGame() {
  */
 function frame() {
     if(!paused) {
-        genDelta();
         input();
         update();
         render();
-        loop = requestAnimationFrame(frame);
     }
+    genDelta();
+    loop = requestAnimationFrame(frame);
 }
 
 /*
@@ -101,6 +104,14 @@ function update() {
             }
         }
     }
+    
+    if(updLoops === 10) {
+        distance++;
+        updLoops = 0;
+    }
+    else {
+        updLoops++;
+    }
 }
 
 function render() {
@@ -132,6 +143,15 @@ function render() {
     
     // Generate player as background layer 1
     canvasContext.drawImage(player.image, player.x, player.y);
+    
+    // Display the distance
+    document.getElementById('distance').innerHTML = "Distance: " + distance;
+//     canvasContext.fillStyle = Colours.BLACK;
+//     canvasContext.font = "15px Arial";
+//     canvasContext.fillText("Distance: " + distance, 10, 50);
+    // Debug stuffs
+    // Display the delta
+    document.getElementById('delta').innerHTML = "Delta: " + delta;
 }
 
 /*
@@ -161,28 +181,28 @@ document.addEventListener('keyup', function(event) {
 });
 function input() {
     for(var i in pressedKeys) {
-	switch(pressedKeys[i]) {
-	    case KEYS.UP:
-		player.y -= player.speed;
-		if(player.y < 0)
-		    player.y = 0;
-		break;
-	    case KEYS.DOWN:
-		player.y += player.speed;
-		if(player.y+player.height > gameCanvas.height)
-		    player.y = gameCanvas.height-player.height;
-		break;
-	    case KEYS.LEFT:
-		player.x -= player.speed;
-		if(player.x < 0)
-		    player.x = 0;
-		break;
-	    case KEYS.RIGHT:
-		player.x += player.speed;
-		if(player.x+player.width > gameCanvas.width)
-		    player.x = gameCanvas.width-player.width;
-		break;
-	}
+        switch(pressedKeys[i]) {
+            case KEYS.UP:
+            player.y -= player.speed;
+            if(player.y < 0)
+                player.y = 0;
+            break;
+            case KEYS.DOWN:
+            player.y += player.speed;
+            if(player.y+player.height > gameCanvas.height)
+                player.y = gameCanvas.height-player.height;
+            break;
+            case KEYS.LEFT:
+            player.x -= player.speed;
+            if(player.x < 0)
+                player.x = 0;
+            break;
+            case KEYS.RIGHT:
+            player.x += player.speed;
+            if(player.x+player.width > gameCanvas.width)
+                player.x = gameCanvas.width-player.width;
+            break;
+        }
     }
 }
 
@@ -191,9 +211,12 @@ function input() {
  */
 function colCheck() {
     for(var i in missileGroup) {
-	if(collides(missileGroup[i], player)) {
-	    missileGroup.splice(i, 1);
-	}
+        if(collides(missileGroup[i], player)) {
+//             for(i in missileGroup) {
+//                 delete missileGroup[i];
+//             }
+            missileGroup.length = 0;
+        }
     }
 }
 
@@ -207,27 +230,22 @@ function collides(a, b) {
     a.y + a.height > b.y;
 }
 
-function pause(p) {
-    paused = p;
-    frame();
-}
-
 /*
  * Checks if the tab is focused
  */
 window.onblur = function() {
-    console.log("Pausing...");
-    pause(true);
+//     console.log("Pausing...");
+    paused = true;
 }
 window.onfocus = function() {
-    console.log("Unpausing...");
-    pause(false);
+//     console.log("Unpausing...");
+    paused = false;
 }
 
 /*
  * Load the game
  */
 window.addEventListener("load", function() {
-    paused = false;
+    document.getElementById('gameCanvas').focus();
     loadGame();
 })
