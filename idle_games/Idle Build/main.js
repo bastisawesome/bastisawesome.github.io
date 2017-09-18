@@ -72,9 +72,8 @@ function generateDisplay() {
 		+ ", " + (res.sellAmt*10) + ")'>Sell " + res.sellAmt*10 + ' '
 		+ res.name + "<br/>For "
 		+ res.value*(res.sellAmt*10) + " money</button></span>";
+	    out += "<br/><br/>";
 	}
-        
-        out += "<br/>";
     }
     
     //Builds the buildings HTML
@@ -101,23 +100,30 @@ function generateDisplay() {
     }
 
     //Builds upgrades HTML
-    for(var obj in game.upgrades) {
-        var upg = game.upgrades[obj];
-        out += "<span id='" + fix(upg.name) + "'";
-        if(upg.unlocked == false)
-            out += " style='display:none'";
-        out += ">";
-        if(upg.purchased == false) {
-            out += "<button onClick='buyUpg("
-                   + JSON.stringify(fix(upg.name))
-                   + ")'>Purchase " + upg.dispName + "<br/>Cost: " + upg.cost + " " + upg.buyRes
-                   + "<br/>"
-                   + "<span id='" + fix(upg.name) + "Desc'>" + upg.desc + "</span><br/></button><br/></span>";
-        }
-        else if(upg.purchased == true) {
-            out += upg.dispName + " purchased<br/></span>";
-        }
+    out += "<span id='upgradeContainer' class='container'><br/>";
+    // Display purchaseable upgrades
+    out += "<span id='unlockedUpgrades'>";
+    for(var a in gups) {
+	for(var b in gups[a]) {
+	    for(var c in gups[a][b]) {
+		var upg = gups[a][b][c];
+		if(!upg.unlocked && !upg.purchased) continue;
+		out += upg.name + "<br/>";
+	    }
+	}
     }
+    
+    // Display purchased upgrades
+    out += "</span><span id='purchasedUpgrades'>"
+    for(var a in gups) {
+	for(var b in gups[a]) {
+	    for(var c in gups[a][b]) {
+		var upg = gups[a][b][c];
+		if(!upg.purchased && upg.unlocked) continue;
+	    }
+	}
+    }
+    out += "</span></span><br/>";
     
     document.getElementById('randEvents').style.display = 'none';
     
@@ -139,46 +145,48 @@ function write(id, value) {
 }
 
 function display() {
-	//Display items
-	for(var obj in game.resources) {
-	    var res = game.resources[obj];
-            write(fix(res.name), prettify(res.amount));
-	    if(res.sellable) {
-		if(res.amount >= (res.sellAmt*10))
-		    document.getElementById(fix(res.name) + "SellX10").style.display = 'inline';
-		else
-		    document.getElementById(fix(res.name) + "SellX10").style.display = 'none';
+    //Display items
+    for(var obj in game.resources) {
+	var res = game.resources[obj];
+	write(fix(res.name), prettify(res.amount));
+	if(res.sellable) {
+	    if(res.amount >= (res.sellAmt*10))
+		document.getElementById(fix(res.name) + "SellX10").style.display = 'inline';
+	    else
+		document.getElementById(fix(res.name) + "SellX10").style.display = 'none';
+	}
+    }
+    
+    for(var obj in game.buildings) {
+	var build = game.buildings[obj]
+	if(build.unlocked) { 
+	    write(fix(game.buildings[obj].name) + "Amount", game.buildings[obj].amount);
+	    var message = "";
+	    for(var i=0; i<build.buyRes.length; i++) {
+		message += prettify(game.buildings[obj].cost[i]) + " " + game.resources[game.buildings[obj].buyRes[i]].name + '<br/>';
+	    }
+	    write((fix(game.buildings[obj].name)+"Cost"), message);
+	    write(fix(build.name) + "Desc", build.desc);
+	    document.getElementById(fix(build.name)).style.display = "inline";
+	}
+	else {
+	    document.getElementById(fix(build.name)).style.display = "none";
+	}
+    }
+    
+    // Display upgrades
+    for(var a in game.upgrades) {
+	for(var b in game.upgrades[a]) {
+	    for(var c in game.upgrades[a][b]) {
+		var upg = game.upgrades[a][b][c];
+		if(!upg.unlocked) continue;
+		if(upg.purchased) {
+		    write("purchasedUpgrades", upg.name);
+		    continue;
+		}
+		write("unlockedUpgrades", upg.name);
 	    }
 	}
-	
-	for(var obj in game.buildings) {
-            var build = game.buildings[obj]
-            if(build.unlocked) {
-                write(fix(game.buildings[obj].name) + "Amount", game.buildings[obj].amount);
-                var message = "";
-                for(var i=0; i<build.buyRes.length; i++) {
-                    message += prettify(game.buildings[obj].cost[i]) + " " + game.resources[game.buildings[obj].buyRes[i]].name + '<br/>';
-                }
-                write((fix(game.buildings[obj].name)+"Cost"), message);
-                write(fix(build.name) + "Desc", build.desc);
-                document.getElementById(fix(build.name)).style.display = "inline";
-            }
-            else {
-                document.getElementById(fix(build.name)).style.display = "none";
-            }
-	}
-	for(var obj in game.upgrades) {
-        if(game.upgrades[obj].purchased == true) {
-            write(fix(game.upgrades[obj].name), "<span>" + game.upgrades[obj].dispName
-            + " purchased</span><br/>");
-        }
-        else if(game.upgrades[obj].unlocked == true) {
-            document.getElementById(fix(game.upgrades[obj].name)).style.display = "inline";
-            write(fix(game.upgrades[obj].name) + "Desc", game.upgrades[obj].desc); 
-        }
-        else {
-            document.getElementById(fix(game.upgrades[obj].name)).style.display = "none";
-        }
     }
 }
 
@@ -286,6 +294,7 @@ function buyUpg(name) {
     /*
      * Stores the upgrade information
      */
+    /* OLD CODE!!!
     var upg = game.upgrades[name];
     
     if(game.resources[upg.buyRes].amount >= upg.cost) {
@@ -324,7 +333,7 @@ function buyUpg(name) {
         upg.purchased = true;
         game.global.numUpgPurchased++;
     }
-    display();
+    display();*/
 }
 
 function fix(string) {
@@ -336,20 +345,22 @@ function fix(string) {
 }
 
 function unlockUpg() {
-    for(var obj in game.upgrades) {
-        var upg = game.upgrades[obj];
-        if(!upg.unlocked) {
-            if(upg.addGroup === "buildings") {
-                if(game.buildings[upg.addObject].amount >= upg.req) {
-                    upg.unlocked = true;
-                }
-            }
-            else {
-                if(game.global[upg.reqRes] >= upg.req)
-                    upg.unlocked = true;
-            }
-            display();
-        }
+    for(var type in game.upgrades) {
+	for(var level in game.upgrades[type]) {
+	    for(var obj in game.upgrades[type][level]) {
+		var upg = game.upgrades[type][level][obj];
+		if(game.upgrades[type] === game.upgrades.clicker) {
+		    if(game[upg.addGroup][upg.reqRes] >= upg.req) {
+			upg.unlocked = true;
+		    }
+		}
+		else {
+		    if(game[upg.addGroup][upg.reqRes].amount >= upg.req) {
+			upg.unlocked = true;
+		    }
+		}
+	    }
+	}
     }
 }
 
@@ -401,6 +412,7 @@ function genRandEvent() {
                 if(game.buildings.mine.amount && (genRndNum(0, 100) >= 70)) {
                     var res = game.resources.tinOre;
                     var coal=false, copper=false, iron=false;
+		    /* OLD CODE!!!
                     for(var obj in game.upgrades) {
                         upg = game.upgrades[obj]
                         if(upg.name.contains('Mine Tier')) {
@@ -416,7 +428,7 @@ function genRandEvent() {
                                 iron = true;
                             }
                         }
-                    }
+                    }*/
                     if(coal && genRndNum(0, 100) >= 80)
                         res = game.resources.coal;
                     else if(copper && genRndNum(0, 100) >= 80)
@@ -473,7 +485,7 @@ function click() {
     addRes("tinOre", game.global.tinPerClick)
     game.global.amtTinMined++;
     game.global.amtMined++;
-    
+    /* OLD CODE!!!
     for(var obj in game.upgrades) {
         var upg = game.upgrades[obj];
         if(upg.name.contains('Click') && upg.purchased) {
@@ -487,7 +499,7 @@ function click() {
                 mineIron = true;
             }
         }
-    }
+    }*/
     if(mineCoal && genRndNum(0, 100) >= 80) {
         addRes('coal', game.global.coalPerClick);
         game.global.amtCoalMined++;
@@ -551,6 +563,7 @@ var unlTime = window.setInterval(function() {
  *************SAVE STUFFS!!!*************
  ****************************************/
 function save() {
+    return
     //Copies the game object over to a copy
     var gameCp = JSON.parse(JSON.stringify(game));
     //Cleanup the game copy
@@ -581,6 +594,7 @@ function save() {
         delete gameCp['buildings'][obj].reqObject;
         delete gameCp['buildings'][obj].reqAmt;
     }
+    /* OLD CODE!!!
     for(var obj in gameCp['upgrades']) {
         var a = gameCp['upgrades'][obj];
         delete a.buyRes;
@@ -595,7 +609,7 @@ function save() {
             delete a.reqRes;
         }
         delete a.name;
-    }
+    }*/
     var saveStr = {};
     for(var a in gameCp) {
         saveStr[a] = gameCp[a];
@@ -612,11 +626,14 @@ function save() {
 function load() {
     var saveStr = JSON.parse(localStorage.getItem('saveGame'));
     if(saveStr) {
-        if(saveStr.global.version === "0.0.1" || saveStr.global.version === "V0.1.0 ALPHA") {
-            alert('Unfortunately, do to some updating, your save has to be wiped. Sorry. :(');
+        if(saveStr.global.version === "0.0.1" || saveStr.global.version === "V0.1.0 ALPHA" || saveStr.global.version === "V1.0.1 ALPHA") {
+            alert('Unfortunately, due to some updating, your save has to be wiped. Sorry. :(');
             reset(true);
             return;
         }
+        
+        delete saveStr.global.version; // This variable is only needed when updates occur. Deletes it so the game can detect properly
+	
         for(var a in saveStr) {
             for(var b in saveStr[a]) {
                 if(a === 'global') {
@@ -633,9 +650,9 @@ function load() {
     generateDisplay();
 }
 
-var saveTime = window.setInterval(function() {
+/*var saveTime = window.setInterval(function() {
     save();
-}, 60000);
+}, 60000);*/
 
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; }; // Implements a contains function to strings
 

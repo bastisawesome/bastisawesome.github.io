@@ -1,3 +1,5 @@
+window.onload = loadGame; // Loads the game.
+
 var gameCanvas;                 // Stores the game canvas for easy managament
 var canvasContext;              // Stores the canvas context for easy managament
 var missileGroup= [];          	// Holds all enemy sprites
@@ -7,8 +9,7 @@ var delta, now, then=0;         // Holds the change in FPS
 var player;			            // Controls the player character
 var pressedKeys = [];		    // Handles user input
 var paused = true;		        // Pauses the game
-var distance = 0;               // Keeps track of the distance the player has moved
-var updLoops = 0;               // Number of times the update function has looped
+var distance = 0;               // Contains the distance
 
 /**
  * Sets all of the variables and prepares the game to run.
@@ -26,13 +27,13 @@ function loadGame() {
  * Handles the game loop.
  */
 function frame() {
-    if(!paused) {
+    if(!paused && player.lives > 0) {
+        genDelta();
         input();
         update();
         render();
+        loop = requestAnimationFrame(frame);
     }
-    genDelta();
-    loop = requestAnimationFrame(frame);
 }
 
 /*
@@ -104,14 +105,6 @@ function update() {
             }
         }
     }
-    
-    if(updLoops === 10) {
-        distance++;
-        updLoops = 0;
-    }
-    else {
-        updLoops++;
-    }
 }
 
 function render() {
@@ -123,7 +116,7 @@ function render() {
     canvasContext.rect(0, 0, gameCanvas.width, gameCanvas.height);
     canvasContext.fillStyle = Colours.SKYBLUE;   // Sets the colour
     canvasContext.fill();               // Fills the canvas
-    
+//     
     // Generate clouds as background layer 3
     for(var property in cloudGroup) {
         if(cloudGroup.hasOwnProperty(property)) {
@@ -144,14 +137,10 @@ function render() {
     // Generate player as background layer 1
     canvasContext.drawImage(player.image, player.x, player.y);
     
-    // Display the distance
-    document.getElementById('distance').innerHTML = "Distance: " + distance;
-//     canvasContext.fillStyle = Colours.BLACK;
-//     canvasContext.font = "15px Arial";
-//     canvasContext.fillText("Distance: " + distance, 10, 50);
-    // Debug stuffs
-    // Display the delta
-    document.getElementById('delta').innerHTML = "Delta: " + delta;
+    // Generate player lives as background layer 0
+    canvasContext.fillStyle = Colours.BLACK;
+    canvasContext.font = "25px Arial";
+    canvasContext.fillText("Lives: " + player.lives, 10, 25);
 }
 
 /*
@@ -181,28 +170,28 @@ document.addEventListener('keyup', function(event) {
 });
 function input() {
     for(var i in pressedKeys) {
-        switch(pressedKeys[i]) {
-            case KEYS.UP:
-            player.y -= player.speed;
-            if(player.y < 0)
-                player.y = 0;
-            break;
-            case KEYS.DOWN:
-            player.y += player.speed;
-            if(player.y+player.height > gameCanvas.height)
-                player.y = gameCanvas.height-player.height;
-            break;
-            case KEYS.LEFT:
-            player.x -= player.speed;
-            if(player.x < 0)
-                player.x = 0;
-            break;
-            case KEYS.RIGHT:
-            player.x += player.speed;
-            if(player.x+player.width > gameCanvas.width)
-                player.x = gameCanvas.width-player.width;
-            break;
-        }
+	switch(pressedKeys[i]) {
+	    case KEYS.UP:
+		player.y -= player.speed;
+		if(player.y < 0)
+		    player.y = 0;
+		break;
+	    case KEYS.DOWN:
+		player.y += player.speed;
+		if(player.y+player.height > gameCanvas.height)
+		    player.y = gameCanvas.height-player.height;
+		break;
+	    case KEYS.LEFT:
+		player.x -= player.speed;
+		if(player.x < 0)
+		    player.x = 0;
+		break;
+	    case KEYS.RIGHT:
+		player.x += player.speed;
+		if(player.x+player.width > gameCanvas.width)
+		    player.x = gameCanvas.width-player.width;
+		break;
+	}
     }
 }
 
@@ -211,12 +200,10 @@ function input() {
  */
 function colCheck() {
     for(var i in missileGroup) {
-        if(collides(missileGroup[i], player)) {
-//             for(i in missileGroup) {
-//                 delete missileGroup[i];
-//             }
-            missileGroup.length = 0;
-        }
+	if(collides(missileGroup[i], player)) {
+	    missileGroup.splice(i, 1);
+        player.onHit();
+	}
     }
 }
 
@@ -231,21 +218,26 @@ function collides(a, b) {
 }
 
 /*
- * Checks if the tab is focused
+ * Pauses the game
  */
-window.onblur = function() {
-//     console.log("Pausing...");
-    paused = true;
-}
-window.onfocus = function() {
-//     console.log("Unpausing...");
-    paused = false;
+function pause() {
+    if(paused) {
+        paused = false;
+        frame();
+    }
+    else {
+        paused = true;
+    }
 }
 
 /*
- * Load the game
+ * Checks if the tab is focused
  */
-window.addEventListener("load", function() {
-    document.getElementById('gameCanvas').focus();
-    loadGame();
-})
+window.onblur = function() {
+    console.log("Pausing...");
+    pause();
+}
+window.onfocus = function() {
+    console.log("Unpausing...");
+    pause();
+}

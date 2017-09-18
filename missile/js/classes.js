@@ -13,6 +13,12 @@ Player = function() {
     
     this.onLoop = function() {
     }
+    
+    this.onHit = function() {
+        this.lives--;
+//         this.x = 0;
+//         this.y = gameCanvas.height/2;
+    }
 }
 
 /**
@@ -35,11 +41,18 @@ Missile = function() {
 /**
  * Boss constructor.
  */
+AI = function() {
+    this.a = function() {}
+    this.b = function() {}
+}
+
 Boss = function() {
     this.image = new Image();
     this.image.src = 'img/boss.png';
+    this.ai = AI.a;
     
     this.onLoop = function() {
+        this.ai();
     }
 }
 

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Docs/Ciphers</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <script type="text/javascript" src="js/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/style.css"></link>
+</head>
+<body>
+	<div id="header">
+	    <script>
+		load("header", "header.html");
+	    </script>
+	</div>
+	
+	<div id='content'>
+        <h1>Ciphers</h1>
+        <p>While not expressly a singular project, I have recently been working with ciphers, primarily generating simple ciphers and then deciphering. All of this is done in Python, and will soon be released as a repo. It started out with a simple idea, I wanted to figure out how to write a Caeser cipher, and then I decided that I should go further. So, first step was to make a simple cipher, then I wrote the inverse to decipher. The last part of <code>caeser.py</code> was adding a brute force method, which would display (default to the <abbr title="Command Line Interface">CLI</abbr>) every possible combination.</p>
+        
+        <h3>Caeser Cipher</h3>
+        <p>As described above, my first attempt with ciphers was done with a Caeser cipher. This is a simple cipher, which takes the generic alphabet and swaps words based on a key value (1-25). This would cause the letters to look scrambled, but it is easy enough to decipher. All you have to do is apply the same key to it and it will return to plain English. Of course, this is made easy enough to guess at as spaces are not ciphered. So, one of the first things I did after finishing the base was to define my own alphabet. (Actually, I am currently implementing the alphabet). This will allow the cipher to encode more than just the simple English alphabet. Currently, it does tell capitols, but it doesn't do anything special. When I implement the new alphabet, capitals will be added as separate characters, and therefore the combinations will double.</p>
+        
+        <p>Further with the alphabet, I will likely add more unicode characters, the more common ones from other similar alphabets. This will allow other languages to be encoded, and make it that much more difficult to decipher. This will also cause the brute force method to have even more possible combinations, take longer to crack, and output even more. Fortunately, one of my latest changes fixes this.</p>
+        
+        <p>The brute force method is really simple. It takes every possible key combination (I think there are actually only 25) and runs a loop to generate an output string (necessary for file output), which is formatted as a table. It gives the key and the output to allow the user to try to find a proper message.</p>
+        
+        <h3>Alphine Cipher</h3>
+        <p>So, after I finished the first version of <code>caeser.py</code>, I decided that it wasn't secure enough and I needed to learn more about ciphers. So, I did some research and found an added security method on top of a Caeser cipher. This one was a little harder as you have to define the alphabet yourself, and different encoders use a different alphabet. By default, you would include the English alphabet both in lowercase and uppercase. I added a space, but if you want to decode from another source you would have to remove the space. (I will fix that in a later version). How it gets tricky, though, is the key. The key is actually an A,B,C source. Where A and C are inverses, and A cannot be a factor of 13 (except it can be 1). Originally, I had A and C defined in a tuple, but later realised that it would make it more complicated when parsing user input. So, instead I wrote a function that would generate the inverse of A. When accepting input, it determines whether or not A is a valid key. B can be any number (from my understanding) and is simply used as a multiple/dividend for the cipher. There is another limit with the key that is that A cannot be 0 nor can it be the length of the alphabet (if you use a 26 letter alphabet, it cannot be 26). This might be due to the rule of 13, but I am unsure.</p>
+        
+        <p>So, the alphabet with <code>alpine.py</code> was made to include both uppercase and lowercase, as well as spaces. I don't remember if I added numbers or not, probably not. As with the Caeser cipher, I intent to implement a full unicode alphabet. This one isn't terribly complicated, however I did need to manually generate the alphabet to apply the limits on the key.</p>
+        
+        <p>This one does have a brute force method, but it is a bit more complicated and actually required that I output it to a file. If I attempted to output to <code>stdout</code>, it would fill up and overflow, only showing the last 40 or so outputs. That isn't much, considering there are a couple hundred possible combinations. I guess there is a limit to B, but it is fairly high. So, how it works is it is a double loop, first checking the A, then checking every B combination of A. Like <code>caeser.py</code>, it is formatted as a table. When you open the file you are greeted with a lot of encoded text, that didn't decode correctly, and somewhere in all of it, there is plain English. I did notice that it sometimes decoded a message with improper capitalisation, which I deduced is likely because of the alphabet I am using. However, it did decode the message from another source, so it is possible, if you take out the space in the alphabet.</p>
+        
+        <h3>Putting It Together</h3>
+        <p>So, I had two files: <code>alpine.py</code> and <code>caeser.py</code>. They both had a user interface, and were both used for encoding/decoding/brute forcing strings of text. This led me to the first problem a programmer learns to solve: redundancy. I knew what I needed to do, I needed to write an interface that called a cipher based on user input (also parsed as a <abbr title='Command Line Interface'>CLI</abbr> argument. I moved the Caeser cipher to its own class (it wasn't made with <abbr title='Object Oriented Programming'>OOP</abbr> in mind) and then parsed input to decide which class to call. Finally, it was a matter of implementing my most favourite feature. First, however, I had to rewrite how they displayed. Originally, the output was handled by the encode/decode/brute force methods. This needed to change. So, I made them return the string instead of output it. Then, I implemented a system for deciding where output text would go. This meant the user could output a couple hundred lines of code to the command line, or to a file. Easier parsing with a file, just saying. That was a fairly simple solution, although I made it a little more complicated by halfing the output calls and instead opting to overwrite <code>stdout</code>. This would allow me to use one print statement on the string instead of having another if statement and deciding to output to <code>stdout</code> or to a file.
+        
+        <h3>Final Word</h3>
+        <p>Overall, there is still a bit of work to do on this, but I feel fairly content with what I have so far. Not quite yet ready to release it to GitHub, but soon it will be live. This page is a little different than my usual project doc pages, but as this wasn't a typical project, I felt it deserved some love. Plus, this project is done partially to fill my portfolio, and partially as a learning experience. Perhaps I will write a blog tutorial on it and teach others how to write this program.</p>
+	</div>
+	
+	<div id='footer'><script>load("footer", "footer.html")</script></div>
+</body>
+</html>
