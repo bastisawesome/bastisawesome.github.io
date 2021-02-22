@@ -18,6 +18,33 @@
 	</div>
 	
 	<div id='body'>
+        <h1>Contact:</h1>
+        <form>
+            <label>
+                Email:
+                <input type="email" required=true/>
+            </label><br/>
+            <label>
+                Name:
+                <input type="text" required=true/>
+            </label><br/>
+            <label>
+                Subject:
+                <input type="text" required=true/>
+            </label><br/>
+            <label>
+                Type:
+                <select required=true>
+                    <option value='appointment'>Appointment</option>
+                </select>
+            </label><br/>
+            <label>
+                When:
+                <input type="date" required=true/><br/>
+                <input type="time" required=true/>
+            </label><br/>
+            <button type="submit">Submit</button>
+        </form>
 	</div>
 	
 	<div id='footer'><script>load("footer", "footer.html")</script></div>
